@@ -3,6 +3,10 @@ import net.freetimestudio.BuildResult
 
 def executeScript(String command, String label, String platform)
 {
+    echo "${command}"
+    echo "${label}"
+    echo "${platform}"
+
     if(platform == Platform.Mac || platform == Platform.iOS) {
         sh(script: command, label: label) 
     }

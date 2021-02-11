@@ -226,6 +226,9 @@ def buildEditorBinaries(String platform) {
         String ubtPath = getUBTPath(platform)
         String editorPlatform = getEditorPlatform(platform)
     
+        echo "${ubtPath}"
+        echo "${editorPlatform}"
+
         platform.executeScript("\"${ubtPath}\" Development ${editorPlatform} -Project=\"${env.UPROJECT_PATH}\" -TargetType=Editor -Progress -NoHotReloadFromIDE", 'Compile Editor Binaries', PLATFORM)
     }
 }
