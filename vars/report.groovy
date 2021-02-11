@@ -36,7 +36,7 @@ def sendDiscordMessage(String title, String message, String platform, Integer ve
     def color = messageColors[verbosity]
 
     println("sending message\n${title}\n${message}")
-    discordSend webhookURL: "${env.DISCORD_WEBHOOK}", description: "${platformEmoji} ${extraEmoji} ${currentBuild.fullDisplayName} ${message}", result: color, title: "${title}"
+    discordSend webhookURL: "${env.DISCORD_WEBHOOK}", description: "${extraEmoji} ${platformEmoji} ${currentBuild.fullDisplayName} ${message}", result: color, title: "${title}"
 }
 
 
@@ -61,5 +61,5 @@ def sendSlackMessage(String title, String message, String platform, Integer verb
     println("sending message\n${title}\n${message}")
     slackSend channel: "#${env.SLACK_CHANNEL}",
         color: color,
-        message: "${extraEmoji} <${env.BUILD_URL}/parsed_console|${env.BUILD_FRIENDLY_NAME}>: ${title} ${currentBuild.fullDisplayName} ${message}"
+        message: "${extraEmoji} ${platformEmoji} <${env.BUILD_URL}/parsed_console|${env.BUILD_FRIENDLY_NAME}>: ${title} ${currentBuild.fullDisplayName} ${message}"
 }

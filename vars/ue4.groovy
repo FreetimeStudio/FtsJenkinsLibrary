@@ -216,7 +216,13 @@ def getLogMessages(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5) {
 }
 
 def buildEditorBinaries(String platform) {
+
+    echo "buildEditorBinaries"
+
     lock(resource: "UnrealBuildTool-${NODE_NAME}") {
+    
+        echo "UnrealBuildTool-${NODE_NAME}"
+
         String ubtPath = getUBTPath(platform)
         String editorPlatform = getEditorPlatform(platform)
     
@@ -248,7 +254,6 @@ def uploadEditorBinaries(String platform) {
                     removePrefix: '', sourceFiles: 'Binaries.zip']], 
                 usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false]]
 
-        report.sendMessage('Binaries Updated', '', platform, LogVerbosity.Success, ':gear:')
     }
 }
 
