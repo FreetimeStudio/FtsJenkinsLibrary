@@ -233,6 +233,7 @@ def buildEditorBinaries(String platform) {
         echo "${editorPlatform}"
     
 
-        executeScript("\"${ubtPath}\" Development ${editorPlatform} -Project=\"${env.UPROJECT_PATH}\" -TargetType=Editor -Progress -NoHotReloadFromIDE", 'Compile Editor Binaries', platform)
+        //platform.executeScript("\"${ubtPath}\" Development ${editorPlatform} -Project=\"${env.UPROJECT_PATH}\" -TargetType=Editor -Progress -NoHotReloadFromIDE", 'Compile Editor Binaries', platform)
+        platform.executeScript("bla", "bla2", "bla3")
     }
 }
