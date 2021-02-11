@@ -218,7 +218,7 @@ def getLogMessages(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5) {
 	return attachments
 }
 
-def buildEditorBinaries(String platform) {
+def buildEditorBinaries(String targetPlatform) {
 
     echo "buildEditorBinaries"
 
@@ -226,13 +226,13 @@ def buildEditorBinaries(String platform) {
     
         echo "UnrealBuildTool-${NODE_NAME}"
 
-        String ubtPath = getUBTPath(platform)
+        String ubtPath = getUBTPath(targetPlatform)
         echo "${ubtPath}"
         
-        String editorPlatform = getEditorPlatform(platform)
+        String editorPlatform = getEditorPlatform(targetPlatform)
         echo "${editorPlatform}"
     
 
-        platforms.executeScript("\"${ubtPath}\" Development ${editorPlatform} -Project=\"${env.UPROJECT_PATH}\" -TargetType=Editor -Progress -NoHotReloadFromIDE", 'Compile Editor Binaries', platform)
+        platform.executeScript("\"${ubtPath}\" Development ${editorPlatform} -Project=\"${env.UPROJECT_PATH}\" -TargetType=Editor -Progress -NoHotReloadFromIDE", 'Compile Editor Binaries', targetPlatform)
     }
 }
