@@ -4,20 +4,20 @@ import net.freetimestudio.LogVerbosity
 //BUILD_FRIENDLY_NAME
 //SLACK_CHANNEL
 
-def sendMessage(String title, String message, String platform, Integer verbosity, String extraEmoji = '')
+def sendMessage(String title, String message, String targetPlatform, Integer verbosity, String extraEmoji = '')
 {
     if(env.SLACK_CHANNEL != None)
     {
-        sendSlackMessage(title, message, platform, verbosity, extraEmoji)
+        sendSlackMessage(title, message, targetPlatform, verbosity, extraEmoji)
     }
     
     if(env.DISCORD_WEBHOOK != None)
     {
-        sendDiscordMessage(title, message, platform, verbosity, extraEmoji)
+        sendDiscordMessage(title, message, targetPlatform, verbosity, extraEmoji)
     }
 }
 
-def sendDiscordMessage(String title, String message, String platform, Integer verbosity, String extraEmoji = '')
+def sendDiscordMessage(String title, String message, String targetPlatform, Integer verbosity, String extraEmoji = '')
 {
     def messageColors = ['ABORTED', 'FAILURE', 'ABORTED', 'SUCCESS', 'ABORTED', 'ABORTED']
     
@@ -32,7 +32,7 @@ def sendDiscordMessage(String title, String message, String platform, Integer ve
         return
     }
     
-    def platformEmoji = getPlatformEmoji(platform)
+    def platformEmoji = platform.getPlatformEmoji(targetPlatform)
     def color = messageColors[verbosity]
 
     println("sending message\n${title}\n${message}")
@@ -40,7 +40,7 @@ def sendDiscordMessage(String title, String message, String platform, Integer ve
 }
 
 
-def sendSlackMessage(String title, String message, String platform, Integer verbosity, String extraEmoji = '')
+def sendSlackMessage(String title, String message, String targetPlatform, Integer verbosity, String extraEmoji = '')
 {
     def messageColors = ['neutral', 'danger', 'warning', 'good', 'neutral', 'neutral']
     
@@ -55,7 +55,7 @@ def sendSlackMessage(String title, String message, String platform, Integer verb
         return
     }
     
-    def platformEmoji = getPlatformEmoji(platform)
+    def platformEmoji = platform.getPlatformEmoji(targetPlatform)
     def color = messageColors[verbosity]
 
     println("sending message\n${title}\n${message}")
