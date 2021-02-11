@@ -74,6 +74,9 @@ def getEditorPlatform(String platform) {
 def getUE4DirectoryFolder(String platform) {
     String uePath = "${UE_PATH}"
     
+    echo "getUE4DirectoryFolder"
+    echo uePath
+    
     if ( platform == Platform.Switch
       || platform == Platform.PS4
       || platform == Platform.XboxOne
@@ -224,11 +227,12 @@ def buildEditorBinaries(String platform) {
         echo "UnrealBuildTool-${NODE_NAME}"
 
         String ubtPath = getUBTPath(platform)
-        String editorPlatform = getEditorPlatform(platform)
-    
         echo "${ubtPath}"
+        
+        String editorPlatform = getEditorPlatform(platform)
         echo "${editorPlatform}"
+    
 
-        platform.executeScript("\"${ubtPath}\" Development ${editorPlatform} -Project=\"${env.UPROJECT_PATH}\" -TargetType=Editor -Progress -NoHotReloadFromIDE", 'Compile Editor Binaries', PLATFORM)
+        platform.executeScript("\"${ubtPath}\" Development ${editorPlatform} -Project=\"${env.UPROJECT_PATH}\" -TargetType=Editor -Progress -NoHotReloadFromIDE", 'Compile Editor Binaries', platform)
     }
 }
