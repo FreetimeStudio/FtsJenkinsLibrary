@@ -105,7 +105,7 @@ def sendMessage(Map config = [:])
         title: '',
         message: '',
         target: 'Win64',
-        verbosity: Verbosity.Log,
+        verbosity: LogVerbosity.Log,
         emoji: '',
         attachments: []
     ]
