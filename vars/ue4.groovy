@@ -79,7 +79,7 @@ def getEditorPlatform(String targetPlatform) {
 }
 
 def getUE4DirectoryFolder(Map config = [:]) {
-    String uePath = config.uePath// "${UE_PATH}"
+    String uePath = "${UE_PATH}"
     
     if ( config.target == Platform.Switch
       || config.target == Platform.PS4
