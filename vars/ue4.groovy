@@ -191,26 +191,18 @@ def getLogMessages(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5) {
 		errors.add("... and ${remainingErrors} more")
 	}
 	
-	def attachments = []
-	attachments.addAll(errors)
-	attachments.addAll(warnings)
-	return attachments
+	def messages = {}
+	messages.errors = errors
+	messages.warnings = warnings
+	return messages
 }
 
 def buildEditorBinaries(String targetPlatform) {
 
-    echo "buildEditorBinaries"
-
     lock(resource: "UnrealBuildTool-${NODE_NAME}") {
     
-        echo "UnrealBuildTool-${NODE_NAME}"
-
         String ubtPath = getUBTPath(targetPlatform)
-        echo "${ubtPath}"
-        
         String editorPlatform = getEditorPlatform(targetPlatform)
-        echo "${editorPlatform}"
-    
 
         platform.executeScript("\"${ubtPath}\" Development ${editorPlatform} -Project=\"${env.UPROJECT_PATH}\" -TargetType=Editor -Progress -NoHotReloadFromIDE", 'Compile Editor Binaries', targetPlatform)
     }
