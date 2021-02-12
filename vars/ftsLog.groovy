@@ -114,12 +114,12 @@ def sendMessage(Map config = [:])
 
     if(env.SLACK_CHANNEL)
     {
-        sendSlackMessage(params.title, params.message, params.target, params.verbosity, params.extraEmoji, params.attachments)
+        sendSlackMessage(params.title, params.message, params.target, params.verbosity, params.emoji, params.attachments)
     }
     
     if(env.DISCORD_WEBHOOK)
     {
-        sendDiscordMessage(params.title, params.message, params.target, params.verbosity, params.extraEmoji, params.attachments)
+        sendDiscordMessage(params.title, params.message, params.target, params.verbosity, params.emoji, params.attachments)
     }
 }
 
