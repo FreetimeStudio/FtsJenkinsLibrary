@@ -2,9 +2,7 @@ import net.freetimestudio.Platform
 import net.freetimestudio.LogVerbosity
 import net.freetimestudio.BuildResult
 
-// env.UPROJECT_PATH
-// env.PROJECT_FILE
-// env.BRANCH_NAME
+// env.UE_PATH
 
 /*
 config.uePath
@@ -76,6 +74,11 @@ def getEditorPlatform(String targetPlatform) {
     }
     
     return 'invalid'
+}
+
+def readUnrealVersion(String uprojectPath) {
+    def projectJson = readJSON file: uprojectPath
+    return projectJson['EngineAssociation']
 }
 
 def getUE4DirectoryFolder(Map config = [:]) {

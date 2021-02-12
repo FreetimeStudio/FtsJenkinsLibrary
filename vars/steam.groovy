@@ -1,3 +1,5 @@
+//env.STEAM_SDK_PATH
+
 def writeDepotVDF(String depotId) {        
         writeFile file: "${STEAM_SDK_PATH}/tools/ContentBuilder/scripts/depot_${depotId}.vdf", 
                     text: """"DepotBuildConfig"
@@ -38,9 +40,17 @@ def upload(String appId, String credentialsId) {
    }
 }
 
-def deploy(String appId, String depotId, String credentialsId, String buildComment)
+def deploy(Map config = [:])
 {
-    writeDepotVDF(depotId)
-    writeAppVDF(appid, depotId, buildComment)
-    upload(appid, credentialsId)
+/*
+    def defaultConfig = [
+        appId: '',
+        depotId: '',
+        credentialsId: '',
+        buildComment: ''
+    ]
+*/
+    writeDepotVDF(config.depotId)
+    writeAppVDF(config.appId, config.depotId, config.buildComment)
+    upload(config.appId, config.credentialsId)
 }
