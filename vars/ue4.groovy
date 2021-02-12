@@ -144,7 +144,10 @@ def buildEditorBinaries(Map config = [:]) {
         String ubtPath = getUBTPath(config)
         String editorPlatform = getEditorPlatform(config.target)
 
-        platform.executeScript("\"${ubtPath}\" Development ${editorPlatform} -Project=\"${config.projectPath}\" -TargetType=Editor -Progress -NoHotReloadFromIDE", 'Compile Editor Binaries')
+        platform.executeScript(
+            "\"${ubtPath}\" Development ${editorPlatform} -Project=\"${config.projectPath}\"" + 
+                " -TargetType=Editor -Progress -NoHotReloadFromIDE", 
+            'Compile Editor Binaries')
     }
 }
 
@@ -153,7 +156,17 @@ def packageProject(Map config = [:]) {
         String uatPath = getUATPath(config)
         String ue4ExePath = getUE4ExePath(config)
         
-        platform.executeScript("\"${uatPath}\" -ScriptsForProject=\"${config.projectPath}\" BuildCookRun -nocompile -nocompileeditor -installed -nop4 -project=\"${config.projectPath}\" -cook -stage -archive -archivedirectory=\"${confing.buildOutputPath}\" -package -clientconfig=${config.buildConfig} -ue4exe=\"${ue4ExePath}\" -prereqs -nodebuginfo -targetplatform=${config.target} -build -utf8output -Pak -Rocket", 'Package Project')
+        platform.executeScript(
+            "\"${uatPath}\"" +
+                " -ScriptsForProject=\"${config.projectPath}\"" +
+                " BuildCookRun -nocompile -nocompileeditor -installed -nop4" +
+                " -project=\"${config.projectPath}\"" + 
+                " -cook -stage -archive" +
+                " -archivedirectory=\"${confing.buildOutputPath}\"" + 
+                " -package -clientconfig=${config.buildConfig}" +
+                " -ue4exe=\"${ue4ExePath}\" -prereqs -nodebuginfo" + 
+                " -targetplatform=${config.target} -build -utf8output -Pak -Rocket", 
+            'Package Project')
     }
     
     stash includes: 'Builds/**', name: getUE4DirectoryFolder(targetPlatform)
@@ -167,7 +180,8 @@ def uploadEditorBinaries(Map config = [:]) {
         fileOperations([fileDeleteOperation(excludes: '', includes: 'Binaries.zip')])
     }
 
-    zip(zipFile: 'Binaries.zip', archive: false, glob: '**/Binaries/**/*.dll,**/Binaries/**/*.target,**/Binaries/**/*.modules')
+    zip(zipFile: 'Binaries.zip', archive: false, 
+        glob: '**/Binaries/**/*.dll,**/Binaries/**/*.target,**/Binaries/**/*.modules')
 
     ftpPublisher alwaysPublishFromMaster: true,
         continueOnError: false,
@@ -197,7 +211,10 @@ def lintProject(Map config = [:]) {
         catchError(buildResult: BuildResult.Success, stageResult: BuildResult.Failure) { //Linter returns 2 for warnings
             //TODO -TreatWarningsAsErrors 
             def editorCMD = getEditorCMDPath(config)
-            platform.executeScript("\"${editorCMD}\" \"${config.projectPath}\" \"${config.lintPath}\" -run=Linter -json=LintReport.json", 'Validate Conventions')
+            platform.executeScript(
+                "\"${editorCMD}\" \"${config.projectPath}\" \"${config.lintPath}\"" + 
+                " -run=Linter -json=LintReport.json", 
+                'Validate Conventions')
         }
     }
     finally  {
