@@ -5,19 +5,19 @@ import net.freetimestudio.LogVerbosity
 //SLACK_CHANNEL
 
 def VerbosityLog() {
-    return LogVerbosity.Log; 
+    return LogVerbosity.Log
 }
 
 def VerbositySuccess() {
-    return LogVerbosity.Success; 
+    return LogVerbosity.Success
 }
 
 def VerbosityWarning() {
-    return LogVerbosity.Warning; 
+    return LogVerbosity.Warning
 }
 
 def VerbosityError() {
-    return LogVerbosity.Error; 
+    return LogVerbosity.Error
 }
 
 def parseLog(String rulesPath) {

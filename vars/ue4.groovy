@@ -146,7 +146,7 @@ def buildEditorBinaries(Map config = [:]) {
 }
 
 
-def uploadEditorBinaries(Map config = [:], String remoteDirectory) {
+def uploadEditorBinaries(Map config = [:]) {
     if (fileExists('Binaries.zip')) {
         fileOperations([fileDeleteOperation(excludes: '', includes: 'Binaries.zip')])
     }
@@ -163,7 +163,7 @@ def uploadEditorBinaries(Map config = [:], String remoteDirectory) {
             transfers: [[
                 asciiMode: false, cleanRemote: true, excludes: '', flatten: false, 
                 makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', 
-                remoteDirectory: "${remoteDirectory}", remoteDirectorySDF: false, 
+                remoteDirectory: "${config.remoteDirectory}", remoteDirectorySDF: false, 
                 removePrefix: '', sourceFiles: 'Binaries.zip']], 
             usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false]]
 
@@ -176,17 +176,17 @@ def validateAssets(Map config = [:]) {
     }
 }
 
-def lintProject(Map config = [:], String lintPath, String lintLogFolder) {
+def lintProject(Map config = [:]) {
     try {
         catchError(buildResult: BuildResult.Success, stageResult: BuildResult.Failure) { //Linter returns 2 for warnings
             //TODO -TreatWarningsAsErrors 
             def editorCMD = getEditorCMDPath(config)
-            platform.executeScript("\"${editorCMD}\" \"${projectPath}\" \"${lintPath}\" -run=Linter -json=LintReport.json", 'Validate Conventions')
+            platform.executeScript("\"${editorCMD}\" \"${config.projectPath}\" \"${config.lintPath}\" -run=Linter -json=LintReport.json", 'Validate Conventions')
         }
     }
     finally  {
         def violationReport = ""
-        def lintReport = readJSON(file: lintLogFolder)
+        def lintReport = readJSON(file: config.lintLogFile)
         def violators = lintReport.Violators
         
         violators.each { violator -> 
