@@ -219,10 +219,8 @@ def buildEditorBinaries(String targetPlatform) {
 
 def uploadEditorBinaries(String targetPlatform) {
     if(targetPlatform == Platform.Win64) {
-        script {
-            if (fileExists('Binaries.zip')) {
-                fileOperations([fileDeleteOperation(excludes: '', includes: 'Binaries.zip')])
-            }
+        if (fileExists('Binaries.zip')) {
+            fileOperations([fileDeleteOperation(excludes: '', includes: 'Binaries.zip')])
         }
 
         zip(zipFile: 'Binaries.zip', archive: false, glob: '**/Binaries/**/*.dll,**/Binaries/**/*.target,**/Binaries/**/*.modules')
@@ -275,10 +273,6 @@ def lintProject(String targetPlatform, String lintPath) {
 
         println(violationReport)
     }
-}
-
-def runTests(String targetPlatform) {
-    echo "TODO"
 }
 
 def package(String targetPlatform) {
