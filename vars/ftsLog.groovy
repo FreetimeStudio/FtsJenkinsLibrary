@@ -99,16 +99,27 @@ def getLogMessages(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5) {
 	return messages
 }
 
-def sendMessage(String title, String message, String targetPlatform, Integer verbosity, String extraEmoji = '', attachments = [])
+def sendMessage(Map config = [:])
 {
+    def defaultConfig = [
+        title: '',
+        message: '',
+        target: 'Win64',
+        verbosity: Verbosity.Log,
+        emoji: '',
+        attachments: []
+    ]
+    
+    def params = defaultConfig << config
+
     if(env.SLACK_CHANNEL)
     {
-        sendSlackMessage(title, message, targetPlatform, verbosity, extraEmoji, attachments)
+        sendSlackMessage(params.title, params.message, params.target, params.verbosity, params.extraEmoji, params.attachments)
     }
     
     if(env.DISCORD_WEBHOOK)
     {
-        sendDiscordMessage(title, message, targetPlatform, verbosity, extraEmoji, attachments)
+        sendDiscordMessage(params.title, params.message, params.target, params.verbosity, params.extraEmoji, params.attachments)
     }
 }
 
@@ -131,7 +142,11 @@ def sendDiscordMessage(String title, String message, String targetPlatform, Inte
     def color = messageColors[verbosity]
 
     println("sending message\n${title}\n${message}")
-    discordSend webhookURL: "${env.DISCORD_WEBHOOK}", description: "${extraEmoji} ${platformEmoji} ${currentBuild.fullDisplayName} ${message}", result: color, title: "${title}"
+    discordSend webhookURL: "${env.DISCORD_WEBHOOK}", 
+        title: "${title}",
+        description: "${extraEmoji} ${platformEmoji} ${currentBuild.fullDisplayName} ${message}",
+        link: "${env.BUILD_URL}/parsed_console",
+        result: color
     
     attachments.each{ attachment ->
         def attachmentMessage = formatAttachmentForDiscord(attachment)
@@ -161,7 +176,7 @@ def sendSlackMessage(String title, String message, String targetPlatform, Intege
     println("sending message\n${title}\n${message}")
     slackSend channel: "#${env.SLACK_CHANNEL}",
         color: color,
-        message: "${extraEmoji} ${platformEmoji} <${env.BUILD_URL}/parsed_console|${env.BUILD_FRIENDLY_NAME}>: ${currentBuild.fullDisplayName} ${title} ${message}"
+        message: "${extraEmoji} ${platformEmoji} <${env.BUILD_URL}/parsed_console|${currentBuild.fullDisplayName}>: ${title} ${message}"
         attachments: formatAttachmentsForSlack(attachments)
 }
 
