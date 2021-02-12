@@ -4,6 +4,14 @@ import net.freetimestudio.LogVerbosity
 //BUILD_FRIENDLY_NAME
 //SLACK_CHANNEL
 
+def setLogVerbosity(Integer newVerbosity) {
+    env.LOG_VERBOSITY = newVerbosity
+}
+
+def verbosityVerbose() {
+    return LogVerbosity.Verbose
+}
+
 def verbosityLog() {
     return LogVerbosity.Log
 }
@@ -153,7 +161,7 @@ def sendSlackMessage(String title, String message, String targetPlatform, Intege
     println("sending message\n${title}\n${message}")
     slackSend channel: "#${env.SLACK_CHANNEL}",
         color: color,
-        message: "${extraEmoji} ${platformEmoji} <${env.BUILD_URL}/parsed_console|${env.BUILD_FRIENDLY_NAME}>: ${title} ${currentBuild.fullDisplayName} ${message}"
+        message: "${extraEmoji} ${platformEmoji} <${env.BUILD_URL}/parsed_console|${env.BUILD_FRIENDLY_NAME}>: ${currentBuild.fullDisplayName} ${title} ${message}"
         attachments: formatAttachmentsForSlack(attachments)
 }
 
