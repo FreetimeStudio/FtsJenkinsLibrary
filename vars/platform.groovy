@@ -34,6 +34,9 @@ def getOutputFolder(String targetPlatform) {
 
 
 def getPlatformEmoji(String targetPlatform) {
+
+    return ''
+
     if ( targetPlatform == Platform.Win64 ) {
         return  "${env.WINDOWS_EMOJI}"
     }
@@ -58,6 +61,8 @@ def getPlatformEmoji(String targetPlatform) {
 }
 
 def getBuildResultEmoji(String buildResult) {
+    return ''
+
     if ( buildResult == BuildResult.Success ) {
         return  "${env.BUILD_SUCCESS_EMOJI}"
     }
