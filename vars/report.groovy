@@ -148,10 +148,10 @@ def formatAttachmentsForSlack(unformattedAttachments) {
         def text = unformattedAttachment.message
         def color = 'neutral'
         
-        if(unformattedAttachment.type = "warning") {
+        if(unformattedAttachment.type == "warning") {
             color = 'warning'
         }
-        else if(unformattedAttachment.type = "error") {
+        else if(unformattedAttachment.type == "error") {
             color = 'danger'
         }
         
@@ -175,11 +175,11 @@ def formatAttachmentForDiscord(unformattedAttachment) {
 
     message.description = unformattedAttachment.message
 
-    if(unformattedAttachment.type = "warning") {
+    if(unformattedAttachment.type == "warning") {
         message.title = 'Warning'
         message.result = 'UNSTABLE'
     }
-    else if(unformattedAttachment.type = "error") {
+    else if(unformattedAttachment.type == "error") {
         message.title = 'Error'
         message.result = 'FAILURE'
     }
