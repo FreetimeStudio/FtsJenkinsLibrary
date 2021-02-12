@@ -152,6 +152,9 @@ def buildEditorBinaries(Map config = [:]) {
 }
 
 def packageProject(Map config = [:]) {
+
+    echo "package"
+
     lock(resource: "UnrealBuildTool-${NODE_NAME}") {
         String uatPath = getUATPath(config)
         String ue4ExePath = getUE4ExePath(config)
@@ -162,17 +165,24 @@ def packageProject(Map config = [:]) {
                 " BuildCookRun -nocompile -nocompileeditor -installed -nop4" +
                 " -project=\"${config.projectPath}\"" + 
                 " -cook -stage -archive" +
-                " -archivedirectory=\"${config.buildOutputPath}\"" + 
+                " -archivedirectory=\"${env.WORKSPACE}/Builds\"" + 
                 " -package -clientconfig=${config.buildConfig}" +
                 " -ue4exe=\"${ue4ExePath}\" -prereqs -nodebuginfo" + 
                 " -targetplatform=${config.target} -build -utf8output -Pak -Rocket", 
             'Package Project')
     }
     
+    echo "stashing"
+    
     stash includes: 'Builds/**', name: getUE4DirectoryFolder(config)
+
+    echo "clean"
+
     dir('Builds') {
         deleteDir()
     }
+
+    echo "done"
 }
 
 def uploadEditorBinaries(Map config = [:]) {
