@@ -139,7 +139,7 @@ def buildEditorBinaries(Map config = [:]) {
     lock(resource: "UnrealBuildTool-${NODE_NAME}") {
     
         String ubtPath = getUBTPath(config)
-        String editorPlatform = getEditorPlatform(config)
+        String editorPlatform = getEditorPlatform(config.target)
 
         platform.executeScript("\"${ubtPath}\" Development ${editorPlatform} -Project=\"${config.projectPath}\" -TargetType=Editor -Progress -NoHotReloadFromIDE", 'Compile Editor Binaries')
     }
