@@ -4,6 +4,22 @@ import net.freetimestudio.LogVerbosity
 //BUILD_FRIENDLY_NAME
 //SLACK_CHANNEL
 
+def VerbosityLog() {
+    return LogVerbosity.Log; 
+}
+
+def VerbositySuccess() {
+    return LogVerbosity.Success; 
+}
+
+def VerbosityWarning() {
+    return LogVerbosity.Warning; 
+}
+
+def VerbosityError() {
+    return LogVerbosity.Error; 
+}
+
 def parseLog(String rulesPath) {
 	step([$class: 'LogParserPublisher', parsingRulesPath: "${rulesPath}", useProjectRule: false, unstableOnWarning: true])
 }
