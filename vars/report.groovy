@@ -4,6 +4,77 @@ import net.freetimestudio.LogVerbosity
 //BUILD_FRIENDLY_NAME
 //SLACK_CHANNEL
 
+def parseLog(String rulesPath) {
+	step([$class: 'LogParserPublisher', parsingRulesPath: "${rulesPath}", useProjectRule: false, unstableOnWarning: true])
+}
+
+def getLogMessages(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5) {
+	def logUrl = env.BUILD_URL + 'consoleText'
+	
+	def response = httpRequest(
+		url: logUrl,
+		authentication: 'jenkins', 
+		ignoreSslErrors: true
+	)
+
+	def log = response.content
+	
+	def warnings = []
+	def errors = []
+
+	//echo 'Build log: ' + log
+	def logLines = log.split("\n")
+	def warningIndex = 0
+	def errorIndex = 0
+
+	logLines.each{ line ->
+		def lowerLine = line.toLowerCase()
+		if(lowerLine.contains("error:") || lowerLine.contains(": error")) {
+			errorIndex++
+			if(errorIndex > maxErrorsToShow)
+			{
+				return
+			}
+			
+			errors.add(line)
+		}
+	
+	
+		if(lowerLine.contains("warning:")) {
+		
+		    //Ignore build data missing warnings
+		    if(lowerLine.contains("_BuiltData': Can't find file.".toLowerCase())) {
+                return
+		    }
+		
+			warningIndex++
+			if(warningIndex > maxWarningsToShow)
+			{
+				return
+			}
+			
+			warnings.add(line)
+		}
+	}
+	
+	if(warningIndex > maxWarningsToShow) {
+		def remainingWarnings = warningIndex - maxWarningsToShow
+		
+		warnings.add("... and ${remainingWarnings} more")
+	}
+	
+	if(errorIndex > maxErrorsToShow) {
+		def remainingErrors = errorIndex - maxErrorsToShow
+		
+		errors.add("... and ${remainingErrors} more")
+	}
+	
+	def messages = {}
+	messages.errors = errors
+	messages.warnings = warnings
+	return messages
+}
+
 def sendMessage(String title, String message, String targetPlatform, Integer verbosity, String extraEmoji = '', attachments = [])
 {
     if(env.SLACK_CHANNEL != None)
@@ -121,7 +192,7 @@ def getLogMessageAttachments(Integer maxWarningsToShow = 5, Integer maxErrorsToS
 
     def attachments = []
     
-    def logMessages = ue4.getLogMessages(maxWarningsToShow, maxErrorsToShow)
+    def logMessages = getLogMessages(maxWarningsToShow, maxErrorsToShow)
     logMessages.warnings.each{ warning -> 
         attachments.add([
             type: 'warning',
