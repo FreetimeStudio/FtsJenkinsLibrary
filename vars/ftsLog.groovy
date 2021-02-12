@@ -4,19 +4,19 @@ import net.freetimestudio.LogVerbosity
 //BUILD_FRIENDLY_NAME
 //SLACK_CHANNEL
 
-def VerbosityLog() {
+def verbosityLog() {
     return LogVerbosity.Log
 }
 
-def VerbositySuccess() {
+def verbositySuccess() {
     return LogVerbosity.Success
 }
 
-def VerbosityWarning() {
+def verbosityWarning() {
     return LogVerbosity.Warning
 }
 
-def VerbosityError() {
+def verbosityError() {
     return LogVerbosity.Error
 }
 
