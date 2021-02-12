@@ -8,6 +8,23 @@ def setLogVerbosity(Integer newVerbosity) {
     env.LOG_VERBOSITY = newVerbosity
 }
 
+def setLogVerbosity(String newVerbosity) {
+    setLogVerbosity(LogVerbosity.Success)
+    
+    if(newVerbosity == 'Warning'){
+        setLogVerbosity(LogVerbosity.Warning)
+    }
+    if(newVerbosity == 'Error'){
+        setLogVerbosity(LogVerbosity.Error)
+    }
+    if(newVerbosity == 'Log'){
+        setLogVerbosity(LogVerbosity.Log)
+    }
+    if(newVerbosity == 'Verbose'){
+        setLogVerbosity(LogVerbosity.Verbose)
+    }
+}
+
 def getLogVerbosity(Integer newVerbosity) {
     return env.LOG_VERBOSITY as Integer
 }

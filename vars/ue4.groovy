@@ -169,7 +169,7 @@ def packageProject(Map config = [:]) {
             'Package Project')
     }
     
-    stash includes: 'Builds/**', name: getUE4DirectoryFolder(targetPlatform)
+    stash includes: 'Builds/**', name: getUE4DirectoryFolder(config)
     dir('Builds') {
         deleteDir()
     }

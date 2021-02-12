@@ -14,14 +14,16 @@ def getAppChannel(String targetPlatform) {
     return ''
 }
 
-def deploy(String targetPlatform, String credentialsId, String user, String game)
+def deploy(Map config = [:])
 {
-    def specificOutputFolder = platform.getOutputFolder(targetPlatform)
-    def appChannel = getAppChannel(targetPlatform)
+    //String target, String credentialsId, String user, String game
     
-    withCredentials([string(credentialsId: credentialsId, variable: 'apiKey')]) {
+    def specificOutputFolder = platform.getOutputFolder(config.target)
+    def appChannel = getAppChannel(config.target)
+    
+    withCredentials([string(credentialsId: config.credentialsId, variable: 'apiKey')]) {
         withEnv(["BUTLER_API_KEY=${apiKey}"]) {
-            platform.executeScript("butler push \"${WORKSPACE}/Builds/${specificOutputFolder}\" \"${user}\"/\"${game}\:${appChannel}", 'Upload', platforms.Win64)
+            platform.executeScript("butler push \"${WORKSPACE}/Builds/${specificOutputFolder}\" \"${config.user}/${config.game}:${appChannel}\"", 'Upload')
         }
     }
 }
