@@ -112,6 +112,19 @@ def sendMessage(Map config = [:])
     
     def params = defaultConfig << config
 
+    if(env.LOG_VERBOSITY == LogVerbosity.None)
+    {
+        return
+    }
+    
+    if(env.LOG_VERBOSITY < verbosity)
+    {
+        println("Not sending message\n${params.title}\n${params.message}")
+        return
+    }
+    
+    println("Sending message\n${params.title}\n${params.message}")
+
     if(env.SLACK_CHANNEL)
     {
         sendSlackMessage(params.title, params.message, params.target, params.verbosity, params.emoji, params.attachments)
@@ -127,21 +140,9 @@ def sendDiscordMessage(String title, String message, String targetPlatform, Inte
 {
     def messageColors = ['ABORTED', 'FAILURE', 'ABORTED', 'SUCCESS', 'ABORTED', 'ABORTED']
     
-    if(env.LOG_VERBOSITY == LogVerbosity.None)
-    {
-        return
-    }
-    
-    if(env.LOG_VERBOSITY < verbosity)
-    {
-        println("not sending message\n${title}\n${message}")
-        return
-    }
-    
     def platformEmoji = platform.getPlatformEmoji(targetPlatform)
     def color = messageColors[verbosity]
 
-    println("sending message\n${title}\n${message}")
     discordSend webhookURL: "${env.DISCORD_WEBHOOK}", 
         title: "${title}",
         description: "${extraEmoji} ${platformEmoji} ${currentBuild.fullDisplayName} ${message}",
@@ -159,21 +160,9 @@ def sendSlackMessage(String title, String message, String targetPlatform, Intege
 {
     def messageColors = ['neutral', 'danger', 'warning', 'good', 'neutral', 'neutral']
     
-    if(env.LOG_VERBOSITY == LogVerbosity.None)
-    {
-        return
-    }
-    
-    if(env.LOG_VERBOSITY < verbosity)
-    {
-        println("not sending message\n${title}\n${message}")
-        return
-    }
-    
     def platformEmoji = platform.getPlatformEmoji(targetPlatform)
     def color = messageColors[verbosity]
 
-    println("sending message\n${title}\n${message}")
     slackSend channel: "#${env.SLACK_CHANNEL}",
         color: color,
         message: "${extraEmoji} ${platformEmoji} <${env.BUILD_URL}/parsed_console|${currentBuild.fullDisplayName}>: ${title} ${message}"

@@ -148,6 +148,18 @@ def buildEditorBinaries(Map config = [:]) {
     }
 }
 
+def packageProject(Map config = [:]) {
+    lock(resource: "UnrealBuildTool-${NODE_NAME}") {
+        String uatPath = getUATPath(config)
+        String ue4ExePath = getUE4ExePath(config)
+        platform.executeScript("\"${uatPath}\" -ScriptsForProject=\"${config.projectPath}\" BuildCookRun -nocompile -nocompileeditor -installed -nop4 -project=\"${UPROJECT_PATH}\" -cook -stage -archive -archivedirectory=\"${BUILD_OUTPUT_PATH}\" -package -clientconfig=${params.buildConfig} -ue4exe=\"${ue4ExePath}\" -prereqs -nodebuginfo -targetplatform=${config.target} -build -utf8output -Pak -Rocket", 'Package Project')
+    }
+    
+    stash includes: 'Builds/**', name: getUE4DirectoryFolder(targetPlatform)
+    dir('Builds') {
+        deleteDir()
+    }
+}
 
 def uploadEditorBinaries(Map config = [:]) {
     if (fileExists('Binaries.zip')) {
@@ -207,17 +219,4 @@ def lintProject(Map config = [:]) {
 
 def runTests(Map config = [:]) {
     echo "TODO"
-}
-
-def packageProject(Map config = [:]) {
-    lock(resource: "UnrealBuildTool-${NODE_NAME}") {
-        String uatPath = getUATPath(config)
-        String ue4ExePath = getUE4ExePath(config)
-        platform.executeScript("\"${uatPath}\" -ScriptsForProject=\"${config.projectPath}\" BuildCookRun -nocompile -nocompileeditor -installed -nop4 -project=\"${UPROJECT_PATH}\" -cook -stage -archive -archivedirectory=\"${BUILD_OUTPUT_PATH}\" -package -clientconfig=${params.buildConfig} -ue4exe=\"${ue4ExePath}\" -prereqs -nodebuginfo -targetplatform=${config.target} -build -utf8output -Pak -Rocket", 'Package Project')
-    }
-    
-    stash includes: 'Builds/**', name: getUE4DirectoryFolder(targetPlatform)
-    dir('Builds') {
-        deleteDir()
-    }
 }

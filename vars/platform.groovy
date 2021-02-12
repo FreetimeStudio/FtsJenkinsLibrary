@@ -35,8 +35,6 @@ def getOutputFolder(String targetPlatform) {
 
 def getPlatformEmoji(String targetPlatform) {
 
-    return ''
-
     if ( targetPlatform == Platform.Win64 ) {
         return  "${env.WINDOWS_EMOJI}"
     }
@@ -47,6 +45,14 @@ def getPlatformEmoji(String targetPlatform) {
     
     if ( targetPlatform == Platform.Linux ) {
         return  "${env.LINUX_EMOJI}"
+    }
+
+    if ( targetPlatform == Platform.Switch ) {
+        return  "${env.SWITCH_EMOJI}"
+    }
+
+    if ( targetPlatform == Platform.Oculus ) {
+        return  "${env.OCULUS_EMOJI}"
     }
 
     if ( targetPlatform == Platform.Steam ) {
