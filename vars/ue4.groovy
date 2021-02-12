@@ -152,7 +152,8 @@ def packageProject(Map config = [:]) {
     lock(resource: "UnrealBuildTool-${NODE_NAME}") {
         String uatPath = getUATPath(config)
         String ue4ExePath = getUE4ExePath(config)
-        platform.executeScript("\"${uatPath}\" -ScriptsForProject=\"${config.projectPath}\" BuildCookRun -nocompile -nocompileeditor -installed -nop4 -project=\"${UPROJECT_PATH}\" -cook -stage -archive -archivedirectory=\"${BUILD_OUTPUT_PATH}\" -package -clientconfig=${params.buildConfig} -ue4exe=\"${ue4ExePath}\" -prereqs -nodebuginfo -targetplatform=${config.target} -build -utf8output -Pak -Rocket", 'Package Project')
+        
+        platform.executeScript("\"${uatPath}\" -ScriptsForProject=\"${config.projectPath}\" BuildCookRun -nocompile -nocompileeditor -installed -nop4 -project=\"${config.projectPath}\" -cook -stage -archive -archivedirectory=\"${confing.buildOutputPath}\" -package -clientconfig=${config.buildConfig} -ue4exe=\"${ue4ExePath}\" -prereqs -nodebuginfo -targetplatform=${config.target} -build -utf8output -Pak -Rocket", 'Package Project')
     }
     
     stash includes: 'Builds/**', name: getUE4DirectoryFolder(targetPlatform)
