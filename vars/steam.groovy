@@ -1,4 +1,15 @@
-//env.STEAM_SDK_PATH
+import net.freetimestudio.Platform
+
+//Needs env.STEAM_SDK_PATH
+
+def getSteamBuilderPath()
+{
+    if(isUnix()) {
+        return "${STEAM_SDK_PATH}/tools/ContentBuilder/builder_osx/steamcmd.sh" 
+    }
+    
+    return "${STEAM_SDK_PATH}/tools/ContentBuilder/builder/steamcmd.exe" 
+}
 
 def writeDepotVDF(String depotId) {        
         writeFile file: "${STEAM_SDK_PATH}/tools/ContentBuilder/scripts/depot_${depotId}.vdf", 
@@ -45,12 +56,15 @@ def deploy(Map config = [:])
 /*
     def defaultConfig = [
         appId: '',
-        depotId: '',
+        depotIds: [
+            "Win64" : "12345",
+            "Mac" : "12346",
+        ],
         credentialsId: '',
         buildComment: ''
     ]
 */
     writeDepotVDF(config.depotId)
-    writeAppVDF(config.appId, config.depotId, config.buildComment)
+    writeAppVDF(config.appId, config.depotIds[config.target], config.buildComment)
     upload(config.appId, config.credentialsId)
 }
