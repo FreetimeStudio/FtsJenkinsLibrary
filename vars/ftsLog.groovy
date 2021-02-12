@@ -117,7 +117,7 @@ def sendMessage(Map config = [:])
         return
     }
     
-    if(env.LOG_VERBOSITY < verbosity)
+    if(env.LOG_VERBOSITY < config.verbosity)
     {
         println("Not sending message\n${params.title}\n${params.message}")
         return
