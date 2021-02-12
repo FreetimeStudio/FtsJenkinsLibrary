@@ -8,6 +8,10 @@ def setLogVerbosity(Integer newVerbosity) {
     env.LOG_VERBOSITY = newVerbosity
 }
 
+def getLogVerbosity(Integer newVerbosity) {
+    return env.LOG_VERBOSITY as Integer
+}
+
 def verbosityVerbose() {
     return LogVerbosity.Verbose
 }
@@ -112,15 +116,12 @@ def sendMessage(Map config = [:])
     
     def params = defaultConfig << config
 
-    echo env.LOG_VERBOSITY
-    echo params.verbosity
-
-    if(env.LOG_VERBOSITY == LogVerbosity.None)
+    if(getLogVerbosity() == LogVerbosity.None)
     {
         return
     }
     
-    if(env.LOG_VERBOSITY < params.verbosity)
+    if(getLogVerbosity() < params.verbosity)
     {
         println("Not sending message\n${params.title}\n${params.message}")
         return
