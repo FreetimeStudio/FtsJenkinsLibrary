@@ -112,12 +112,15 @@ def sendMessage(Map config = [:])
     
     def params = defaultConfig << config
 
+    echo env.LOG_VERBOSITY
+    echo params.verbosity
+
     if(env.LOG_VERBOSITY == LogVerbosity.None)
     {
         return
     }
     
-    if(env.LOG_VERBOSITY < config.verbosity)
+    if(env.LOG_VERBOSITY < params.verbosity)
     {
         println("Not sending message\n${params.title}\n${params.message}")
         return
