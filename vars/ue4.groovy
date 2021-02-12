@@ -6,6 +6,13 @@ import net.freetimestudio.BuildResult
 // env.PROJECT_FILE
 // env.BRANCH_NAME
 
+/*
+config.uePath
+config.ueVersion
+config.target
+config.projectPath
+*/
+
 def getBuildNodeLabel(String targetPlatform) {
     if(targetPlatform == Platform.Win64) {
         return 'windows'
@@ -71,38 +78,35 @@ def getEditorPlatform(String targetPlatform) {
     return 'invalid'
 }
 
-def getUE4DirectoryFolder(String targetPlatform) {
-    String uePath = "${UE_PATH}"
+def getUE4DirectoryFolder(Map config = [:]) {
+    String uePath = config.uePath// "${UE_PATH}"
     
-    echo "getUE4DirectoryFolder"
-    echo uePath
-    
-    if ( targetPlatform == Platform.Switch
-      || targetPlatform == Platform.PS4
-      || targetPlatform == Platform.XboxOne
+    if ( config.target == Platform.Switch
+      || config.target == Platform.PS4
+      || config.target == Platform.XboxOne
       ) {
         uePath = uePath + "/Source"
     }
 
-    uePath = uePath + "/UE_${env.UE_VERSION}"
+    uePath = uePath + "/UE_${config.ueVersion}"
     return uePath
 }
 
-def getUATPath(String targetPlatform) {
-    String uatPath = getUE4DirectoryFolder(targetPlatform) + "/Engine/Build/BatchFiles/RunUAT"
+def getUATPath(Map config = [:]) {
+    String uatPath = getUE4DirectoryFolder(config) + "/Engine/Build/BatchFiles/RunUAT"
     
-    if ( targetPlatform == Platform.Mac || targetPlatform == Platform.iOS ) {
+    if (isUnix()) {
         return uatPath + ".sh"
     }
 
     return uatPath + ".bat"
 }
 
-def getUBTPath(String targetPlatform) {
-    String ubtPath = getUE4DirectoryFolder(targetPlatform) + "/Engine/Binaries"
+def getUBTPath(Map config = [:]) {
+    String ubtPath = getUE4DirectoryFolder(config) + "/Engine/Binaries"
     
-    if ( targetPlatform == Platform.Mac || targetPlatform == Platform.iOS ) {
-        String monoPath = getUE4DirectoryFolder(targetPlatform) + "/Engine/Build/BatchFiles/Mac/RunMono.sh"
+    if ( isUnix() ) {
+        String monoPath = getUE4DirectoryFolder(config) + "/Engine/Build/BatchFiles/Mac/RunMono.sh"
 
         ubtPath = monoPath + "\" \"" + ubtPath
     }
@@ -110,81 +114,79 @@ def getUBTPath(String targetPlatform) {
     return ubtPath + "/DotNET/UnrealBuildTool.exe"
 }
 
-def getUE4ExePath(String targetPlatform) {
-    String ue4ExePath = getUE4DirectoryFolder(targetPlatform) + "/Engine/Binaries"
+def getUE4ExePath(Map config = [:]) {
+    String ue4ExePath = getUE4DirectoryFolder(config) + "/Engine/Binaries"
     
-    if ( targetPlatform == Platform.Mac || targetPlatform == Platform.iOS ) {
+    if ( isUnix() ) {
         return ue4ExePath + "/Mac/UE4Editor.app/Contents/MacOS/UE4Editor"
     }
     
     return 'UE4Editor-Cmd.exe'
 }
 
-def getEditorCMDPath(String targetPlatform) {
-    String cmdPath = getUE4DirectoryFolder(targetPlatform) + "/Engine/Binaries"
+def getEditorCMDPath(Map config = [:]) {
+    String cmdPath = getUE4DirectoryFolder(config) + "/Engine/Binaries"
     
-    if ( targetPlatform == Platform.Mac || targetPlatform == Platform.iOS ) {
+    if ( isUnix() ) {
         return  cmdPath + "/Mac/UE4Editor-Cmd"
     }
     
     return  cmdPath + "/Win64/UE4Editor-Cmd.exe"
 }
 
-def buildEditorBinaries(String targetPlatform) {
+def buildEditorBinaries(Map config = [:]) {
 
     lock(resource: "UnrealBuildTool-${NODE_NAME}") {
     
-        String ubtPath = getUBTPath(targetPlatform)
-        String editorPlatform = getEditorPlatform(targetPlatform)
+        String ubtPath = getUBTPath(config)
+        String editorPlatform = getEditorPlatform(config)
 
-        platform.executeScript("\"${ubtPath}\" Development ${editorPlatform} -Project=\"${env.UPROJECT_PATH}\" -TargetType=Editor -Progress -NoHotReloadFromIDE", 'Compile Editor Binaries', targetPlatform)
+        platform.executeScript("\"${ubtPath}\" Development ${editorPlatform} -Project=\"${config.projectPath}\" -TargetType=Editor -Progress -NoHotReloadFromIDE", 'Compile Editor Binaries')
     }
 }
 
 
-def uploadEditorBinaries(String targetPlatform) {
-    if(targetPlatform == Platform.Win64) {
-        if (fileExists('Binaries.zip')) {
-            fileOperations([fileDeleteOperation(excludes: '', includes: 'Binaries.zip')])
-        }
-
-        zip(zipFile: 'Binaries.zip', archive: false, glob: '**/Binaries/**/*.dll,**/Binaries/**/*.target,**/Binaries/**/*.modules')
-
-        ftpPublisher alwaysPublishFromMaster: true,
-            continueOnError: false,
-            failOnError: false,
-            masterNodeName: '',
-            paramPublish: null,
-            publishers: [[
-                configName: 'FreetimeStudio', 
-                transfers: [[
-                    asciiMode: false, cleanRemote: true, excludes: '', flatten: false, 
-                    makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', 
-                    remoteDirectory: "${env.PROJECT_FILE}/${env.BRANCH_NAME}", remoteDirectorySDF: false, 
-                    removePrefix: '', sourceFiles: 'Binaries.zip']], 
-                usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false]]
-
+def uploadEditorBinaries(Map config = [:], String remoteDirectory) {
+    if (fileExists('Binaries.zip')) {
+        fileOperations([fileDeleteOperation(excludes: '', includes: 'Binaries.zip')])
     }
+
+    zip(zipFile: 'Binaries.zip', archive: false, glob: '**/Binaries/**/*.dll,**/Binaries/**/*.target,**/Binaries/**/*.modules')
+
+    ftpPublisher alwaysPublishFromMaster: true,
+        continueOnError: false,
+        failOnError: false,
+        masterNodeName: '',
+        paramPublish: null,
+        publishers: [[
+            configName: 'FreetimeStudio', 
+            transfers: [[
+                asciiMode: false, cleanRemote: true, excludes: '', flatten: false, 
+                makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', 
+                remoteDirectory: "${remoteDirectory}", remoteDirectorySDF: false, 
+                removePrefix: '', sourceFiles: 'Binaries.zip']], 
+            usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false]]
+
 }
 
-def validateAssets(String targetPlatform) {
+def validateAssets(Map config = [:]) {
     lock(resource: "UnrealBuildTool-${NODE_NAME}") {
-        def editorCMD = getEditorCMDPath(targetPlatform)
-        platform.executeScript("\"${editorCMD}\" \"${env.UPROJECT_PATH}\" -run=DataValidation", 'Validate Data', targetPlatform)
+        def editorCMD = getEditorCMDPath(config)
+        platform.executeScript("\"${editorCMD}\" \"${config.projectPath}\" -run=DataValidation", 'Validate Data')
     }
 }
 
-def lintProject(String targetPlatform, String lintPath) {
+def lintProject(Map config = [:], String lintPath, String lintLogFolder) {
     try {
         catchError(buildResult: BuildResult.Success, stageResult: BuildResult.Failure) { //Linter returns 2 for warnings
             //TODO -TreatWarningsAsErrors 
-            def editorCMD = getEditorCMDPath(targetPlatform)
-            platform.executeScript("\"${editorCMD}\" \"${env.UPROJECT_PATH}\" \"${lintPath}\" -run=Linter -json=LintReport.json", 'Validate Conventions', targetPlatform)
+            def editorCMD = getEditorCMDPath(config)
+            platform.executeScript("\"${editorCMD}\" \"${projectPath}\" \"${lintPath}\" -run=Linter -json=LintReport.json", 'Validate Conventions')
         }
     }
     finally  {
         def violationReport = ""
-        def lintReport = readJSON(file: "${WORKSPACE}/UnrealProject/Saved/LintReports/LintReport.json")
+        def lintReport = readJSON(file: lintLogFolder)
         def violators = lintReport.Violators
         
         violators.each { violator -> 
@@ -200,18 +202,18 @@ def lintProject(String targetPlatform, String lintPath) {
     }
 }
 
-def runTests(String targetPlatform) {
+def runTests(Map config = [:]) {
     echo "TODO"
 }
 
-def packageProject(String targetPlatform) {
+def packageProject(Map config = [:]) {
     lock(resource: "UnrealBuildTool-${NODE_NAME}") {
-        String uatPath = getUATPath(targetPlatform)
-        String ue4ExePath = getUE4ExePath(targetPlatform)
-        platform.executeScript("\"${uatPath}\" -ScriptsForProject=\"${env.UPROJECT_PATH}\" BuildCookRun -nocompile -nocompileeditor -installed -nop4 -project=\"${UPROJECT_PATH}\" -cook -stage -archive -archivedirectory=\"${BUILD_OUTPUT_PATH}\" -package -clientconfig=${params.buildConfig} -ue4exe=\"${ue4ExePath}\" -prereqs -nodebuginfo -targetplatform=${targetPlatform} -build -utf8output -Pak -Rocket", 'Package Project', targetPlatform)
+        String uatPath = getUATPath(config)
+        String ue4ExePath = getUE4ExePath(config)
+        platform.executeScript("\"${uatPath}\" -ScriptsForProject=\"${config.projectPath}\" BuildCookRun -nocompile -nocompileeditor -installed -nop4 -project=\"${UPROJECT_PATH}\" -cook -stage -archive -archivedirectory=\"${BUILD_OUTPUT_PATH}\" -package -clientconfig=${params.buildConfig} -ue4exe=\"${ue4ExePath}\" -prereqs -nodebuginfo -targetplatform=${config.target} -build -utf8output -Pak -Rocket", 'Package Project')
     }
     
-    stash includes: 'Builds/**', name: targetPlatform
+    stash includes: 'Builds/**', name: getUE4DirectoryFolder(targetPlatform)
     dir('Builds') {
         deleteDir()
     }

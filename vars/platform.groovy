@@ -1,15 +1,14 @@
 import net.freetimestudio.Platform
 import net.freetimestudio.BuildResult
 
-def executeScript(String command, String label, String targetPlatform)
+def executeScript(String command, String label)
 {
-    if(targetPlatform == Platform.Mac || targetPlatform == Platform.iOS) {
-        sh(script: command, label: label) 
+    if(isUnix()) {
+        sh(script: command, label: label)
+        return 
     }
     
-    if(targetPlatform == Platform.Win64 || platform == Platform.Linux || Platform == platforms.Switch) {
-        bat(script: command, label: label) 
-    }
+    bat(script: command, label: label) 
 }
 
 def getOutputFolder(String targetPlatform) {
@@ -25,7 +24,7 @@ def getOutputFolder(String targetPlatform) {
         return  'LinuxNoEditor'
     }
     
-    if ( targetPlatform == Platform.Linux ) {
+    if ( targetPlatform == Platform.Switch ) {
         return  'SwitchNoEditor'
     }
     
