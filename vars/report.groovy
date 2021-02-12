@@ -110,8 +110,8 @@ def sendDiscordMessage(String title, String message, String targetPlatform, Inte
     discordSend webhookURL: "${env.DISCORD_WEBHOOK}", description: "${extraEmoji} ${platformEmoji} ${currentBuild.fullDisplayName} ${message}", result: color, title: "${title}"
     
     attachments.each{ attachment ->
-        def message = formatAttachmentForDiscord(attachment)
-        discordSend webhookURL: "${env.DISCORD_WEBHOOK}", description: message.description, result: message.result, title: message.title
+        def attachmentMessage = formatAttachmentForDiscord(attachment)
+        discordSend webhookURL: "${env.DISCORD_WEBHOOK}", description: attachmentMessage.description, result: attachmentMessage.result, title: attachmentMessage.title
     }
 }
 
