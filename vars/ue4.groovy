@@ -152,9 +152,6 @@ def buildEditorBinaries(Map config = [:]) {
 }
 
 def packageProject(Map config = [:]) {
-
-    echo "package"
-
     lock(resource: "UnrealBuildTool-${NODE_NAME}") {
         String uatPath = getUATPath(config)
         String ue4ExePath = getUE4ExePath(config)
@@ -171,7 +168,9 @@ def packageProject(Map config = [:]) {
                 " -targetplatform=${config.target} -build -utf8output -Pak -Rocket", 
             'Package Project')
     }
-    
+}
+
+/*
     echo "stashing"
     
     stash includes: 'Builds/**', name: getUE4DirectoryFolder(config)
@@ -183,7 +182,7 @@ def packageProject(Map config = [:]) {
     }
 
     echo "done"
-}
+*/
 
 def uploadEditorBinaries(Map config = [:]) {
     if (fileExists('Binaries.zip')) {
