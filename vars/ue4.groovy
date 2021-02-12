@@ -242,6 +242,19 @@ def uploadEditorBinaries(String targetPlatform) {
     }
 }
 
+def packageProject(String targetPlatform) {
+    lock(resource: "UnrealBuildTool-${NODE_NAME}") {
+        String uatPath = getUATPath(targetPlatform)
+        String ue4ExePath = getUE4ExePath(targetPlatform)
+        platform.executeScript("\"${uatPath}\" -ScriptsForProject=\"${env.UPROJECT_PATH}\" BuildCookRun -nocompile -nocompileeditor -installed -nop4 -project=\"${UPROJECT_PATH}\" -cook -stage -archive -archivedirectory=\"${BUILD_OUTPUT_PATH}\" -package -clientconfig=${params.buildConfig} -ue4exe=\"${ue4ExePath}\" -prereqs -nodebuginfo -targetplatform=${targetPlatform} -build -utf8output -Pak -Rocket", 'Package Project', targetPlatform)
+    }
+    
+    stash includes: 'Builds/**', name: targetPlatform
+    dir('Builds') {
+        deleteDir()
+    }
+}
+
 def validateAssets(String targetPlatform) {
     lock(resource: "UnrealBuildTool-${NODE_NAME}") {
         def editorCMD = getEditorCMDPath(targetPlatform)
@@ -272,18 +285,5 @@ def lintProject(String targetPlatform, String lintPath) {
         }
 
         println(violationReport)
-    }
-}
-
-def package(String targetPlatform) {
-    lock(resource: "UnrealBuildTool-${NODE_NAME}") {
-        String uatPath = getUATPath(targetPlatform)
-        String ue4ExePath = getUE4ExePath(targetPlatform)
-        platform.executeScript("\"${uatPath}\" -ScriptsForProject=\"${env.UPROJECT_PATH}\" BuildCookRun -nocompile -nocompileeditor -installed -nop4 -project=\"${UPROJECT_PATH}\" -cook -stage -archive -archivedirectory=\"${BUILD_OUTPUT_PATH}\" -package -clientconfig=${params.buildConfig} -ue4exe=\"${ue4ExePath}\" -prereqs -nodebuginfo -targetplatform=${targetPlatform} -build -utf8output -Pak -Rocket", 'Package Project', targetPlatform)
-    }
-    
-    stash includes: 'Builds/**', name: targetPlatform
-    dir('Builds') {
-        deleteDir()
     }
 }
