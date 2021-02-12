@@ -93,12 +93,12 @@ def getLogMessages(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5) {
 
 def sendMessage(String title, String message, String targetPlatform, Integer verbosity, String extraEmoji = '', attachments = [])
 {
-    if(env.SLACK_CHANNEL != None)
+    if(env.SLACK_CHANNEL)
     {
         sendSlackMessage(title, message, targetPlatform, verbosity, extraEmoji, attachments)
     }
     
-    if(env.DISCORD_WEBHOOK != None)
+    if(env.DISCORD_WEBHOOK)
     {
         sendDiscordMessage(title, message, targetPlatform, verbosity, extraEmoji, attachments)
     }
