@@ -64,7 +64,12 @@ def deploy(Map config = [:])
         buildComment: ''
     ]
 */
+    echo "Write Depot VDF"
     writeDepotVDF(config.depotId)
+    
+    echo "Write App VDF"
     writeAppVDF(config.appId, config.depotId, config.buildComment)
+
+    echo "upload"
     upload(config.appId, config.credentialsId)
 }

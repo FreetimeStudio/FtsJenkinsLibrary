@@ -152,6 +152,9 @@ def buildEditorBinaries(Map config = [:]) {
 }
 
 def packageProject(Map config = [:]) {
+    
+    echo "packageProject"
+
     lock(resource: "UnrealBuildTool-${NODE_NAME}") {
         String uatPath = getUATPath(config)
         String ue4ExePath = getUE4ExePath(config)
@@ -168,6 +171,8 @@ def packageProject(Map config = [:]) {
                 " -targetplatform=${config.target} -build -utf8output -Pak -Rocket", 
             'Package Project')
     }
+    
+    echo "done packageProject"
 }
 
 /*
