@@ -65,6 +65,6 @@ def deploy(Map config = [:])
     ]
 */
     writeDepotVDF(config.depotId)
-    writeAppVDF(config.appId, config.depotIds[config.target], config.buildComment)
+    writeAppVDF(config.appId, config.depotId, config.buildComment)
     upload(config.appId, config.credentialsId)
 }
