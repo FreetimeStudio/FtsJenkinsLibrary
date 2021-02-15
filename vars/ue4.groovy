@@ -11,38 +11,6 @@ config.target
 config.projectPath
 */
 
-def getBuildNodeLabel(String targetPlatform) {
-    if(targetPlatform == Platform.Win64) {
-        return 'windows'
-    }
-
-    if(targetPlatform == Platform.Mac) {
-        return 'mac'
-    }
-
-    if(targetPlatform == Platform.iOS) {
-        return 'mac'
-    }
-
-    if(targetPlatform == Platform.Linux) {
-        return 'linux'
-    }
-
-    if(targetPlatform == Platform.Switch) {
-        return 'switch'
-    }
-    
-    if(targetPlatform == Platform.PS4) {
-        return 'ps4'
-    }
-    
-    if(targetPlatform == Platform.XboxOne) {
-        return 'xboxone'
-    }
-    
-    return 'invalid'
-}
-
 //Get the editor runtime for this platform
 def getEditorPlatform(String targetPlatform) {
     if(targetPlatform == Platform.Win64) {
