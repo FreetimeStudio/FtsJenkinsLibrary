@@ -160,8 +160,8 @@ def sendMessage(Map config = [:])
 def sendDiscordMessage(String title, String message, String targetPlatform, Integer verbosity, String extraEmoji = '', attachments = [])
 {
     discordSend webhookURL: env.DISCORD_WEBHOOK, 
-        title: "Test Title",
-        description: "Test Message"
+        title: "${title}",
+        description: "${currentBuild.fullDisplayName} ${message}"
 
     def messageColors = ['ABORTED', 'FAILURE', 'ABORTED', 'SUCCESS', 'ABORTED', 'ABORTED']
     
