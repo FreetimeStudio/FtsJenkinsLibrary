@@ -161,14 +161,8 @@ def sendDiscordMessage(String title, String message, String targetPlatform, Inte
 {
     def messageColors = ['ABORTED', 'FAILURE', 'ABORTED', 'SUCCESS', 'ABORTED', 'ABORTED']
     
-    echo targetPlatform
-    echo verbosity
-    
     def platformEmoji = platform.getPlatformEmoji(targetPlatform)
     def color = messageColors[verbosity]
-
-    echo platformEmoji
-    echo color
 
     discordSend webhookURL: env.DISCORD_WEBHOOK, 
         title: "${title}",
