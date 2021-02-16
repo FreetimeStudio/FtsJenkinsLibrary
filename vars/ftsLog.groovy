@@ -159,19 +159,21 @@ def sendMessage(Map config = [:])
 
 def sendDiscordMessage(String title, String message, String targetPlatform, Integer verbosity, String extraEmoji = '', attachments = [])
 {
-    discordSend webhookURL: env.DISCORD_WEBHOOK, 
-        title: "${title}",
-        description: "${currentBuild.fullDisplayName} ${message}"
-
     def messageColors = ['ABORTED', 'FAILURE', 'ABORTED', 'SUCCESS', 'ABORTED', 'ABORTED']
+    
+    echo targetPlatform
+    echo verbosity
     
     def platformEmoji = platform.getPlatformEmoji(targetPlatform)
     def color = messageColors[verbosity]
 
+    echo platformEmoji
+    echo color
+
     discordSend webhookURL: env.DISCORD_WEBHOOK, 
         title: "${title}",
         description: "${extraEmoji} ${platformEmoji} ${currentBuild.fullDisplayName} ${message}",
-        link: "${env.BUILD_URL}/parsed_console",
+        //link: "${env.BUILD_URL}/parsed_console", //Disabled because Discord will not be able to verify an internal link and errors out
         result: color
     
     attachments.each{ attachment ->
