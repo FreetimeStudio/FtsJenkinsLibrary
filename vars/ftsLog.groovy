@@ -159,12 +159,16 @@ def sendMessage(Map config = [:])
 
 def sendDiscordMessage(String title, String message, String targetPlatform, Integer verbosity, String extraEmoji = '', attachments = [])
 {
+    discordSend webhookURL: env.DISCORD_WEBHOOK, 
+        title: "Test Title",
+        description: "Test Message"
+
     def messageColors = ['ABORTED', 'FAILURE', 'ABORTED', 'SUCCESS', 'ABORTED', 'ABORTED']
     
     def platformEmoji = platform.getPlatformEmoji(targetPlatform)
     def color = messageColors[verbosity]
 
-    discordSend webhookURL: "${env.DISCORD_WEBHOOK}", 
+    discordSend webhookURL: env.DISCORD_WEBHOOK, 
         title: "${title}",
         description: "${extraEmoji} ${platformEmoji} ${currentBuild.fullDisplayName} ${message}",
         link: "${env.BUILD_URL}/parsed_console",
@@ -172,7 +176,7 @@ def sendDiscordMessage(String title, String message, String targetPlatform, Inte
     
     attachments.each{ attachment ->
         def attachmentMessage = formatAttachmentForDiscord(attachment)
-        discordSend webhookURL: "${env.DISCORD_WEBHOOK}", description: attachmentMessage.description, result: attachmentMessage.result, title: attachmentMessage.title
+        discordSend webhookURL: env.DISCORD_WEBHOOK, description: attachmentMessage.description, result: attachmentMessage.result, title: attachmentMessage.title
     }
 }
 
