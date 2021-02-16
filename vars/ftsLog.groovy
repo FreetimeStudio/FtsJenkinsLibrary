@@ -163,8 +163,6 @@ def sendDiscordMessage(String title, String message, String targetPlatform, Inte
     
     def platformEmoji = platform.getPlatformEmoji(targetPlatform)
     def color = messageColors[verbosity]
-    
-    echo color
 
     discordSend webhookURL: env.DISCORD_WEBHOOK, 
         title: "${title}",
