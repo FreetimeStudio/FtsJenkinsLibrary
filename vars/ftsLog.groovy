@@ -168,7 +168,7 @@ def sendDiscordMessage(String title, String message, String targetPlatform, Inte
         title: "${title}",
         description: "${extraEmoji} ${platformEmoji} ${currentBuild.fullDisplayName} ${message}",
         //link: "${env.BUILD_URL}/parsed_console", //Disabled because Discord will not be able to verify an internal link and errors out
-        result: color
+        result: 'ABORTED'
     
     attachments.each{ attachment ->
         def attachmentMessage = formatAttachmentForDiscord(attachment)
