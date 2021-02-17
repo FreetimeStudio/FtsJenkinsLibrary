@@ -114,9 +114,9 @@ def getLogMessages(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5) {
 		errors.add("... and ${remainingErrors} more")
 	}
 	
-	def messages = []
-	messages.addAll(errors)
-	messages.addAll(warnings)
+	def messages = {}
+	messages.errors = errors
+	messages.warnings =warnings
 	return messages
 }
 
