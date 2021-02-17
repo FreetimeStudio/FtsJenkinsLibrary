@@ -243,6 +243,7 @@ def getLogMessageAttachments(Integer maxWarningsToShow = 5, Integer maxErrorsToS
     
     def logMessages = getLogMessages(maxWarningsToShow, maxErrorsToShow)
     logMessages.warnings.each{ warning -> 
+        println("Warning to send: ${warning}")
         attachments.add([
             type: 'warning',
             message: warning
@@ -250,6 +251,7 @@ def getLogMessageAttachments(Integer maxWarningsToShow = 5, Integer maxErrorsToS
     }
         
     logMessages.errors.each{ error -> 
+        println("Error to send: ${error}")
         attachments.add([
             type: 'error',
             message: error
