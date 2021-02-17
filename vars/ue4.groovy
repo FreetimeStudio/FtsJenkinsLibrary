@@ -158,13 +158,27 @@ def packageProject(Map config = [:]) {
 */
 
 def uploadEditorBinaries(Map config = [:]) {
+
+    if(config.target != Platform.Win64 && config.target != Platform.Mac) {
+        println("Invalid target platform ${config.target} to upload binaries for")
+        return
+    }
+
     if (fileExists('Binaries.zip')) {
         fileOperations([fileDeleteOperation(excludes: '', includes: 'Binaries.zip')])
     }
 
-    zip(zipFile: 'Binaries.zip', archive: false, 
-        glob: '**/Binaries/**/*.dll,**/Binaries/**/*.target,**/Binaries/**/*.modules')
-
+    if(config.target == Platform.Win64) {    
+        zip(zipFile: 'Binaries.zip', archive: false, 
+            glob: '**/Binaries/**/*.dll,**/Binaries/**/*.target,**/Binaries/**/*.modules')
+    }
+    else if(config.target == Platform.Mac) {    
+        zip(zipFile: 'Binaries.zip', archive: false, 
+            glob: '**/Binaries/**/*.dylib,**/Binaries/**/*.target,**/Binaries/**/*.modules')
+    }
+    
+    //TODO sha1 of file and upload info to FTP
+    
     ftpPublisher alwaysPublishFromMaster: true,
         continueOnError: false,
         failOnError: false,
@@ -175,7 +189,7 @@ def uploadEditorBinaries(Map config = [:]) {
             transfers: [[
                 asciiMode: false, cleanRemote: true, excludes: '', flatten: false, 
                 makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', 
-                remoteDirectory: "${config.remoteDirectory}", remoteDirectorySDF: false, 
+                remoteDirectory: "${config.remoteDirectory}/${config.target}", remoteDirectorySDF: false, 
                 removePrefix: '', sourceFiles: 'Binaries.zip']], 
             usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false]]
 
