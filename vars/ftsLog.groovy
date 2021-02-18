@@ -208,7 +208,10 @@ def formatAttachmentsForSlack(unformattedAttachments) {
             text: text,
             fallback: text,
             color: color
-          ])
+        ])
+          
+        echo "Slack attachment"
+        echo text
     }
 
     return slackAttachments
