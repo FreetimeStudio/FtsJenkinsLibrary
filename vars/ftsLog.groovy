@@ -67,7 +67,6 @@ def getLogMessages(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5) {
 	def warnings = []
 	def errors = []
 
-	//echo 'Build log: ' + log
 	def logLines = log.split("\n")
 	def warningIndex = 0
 	def errorIndex = 0
@@ -210,9 +209,6 @@ def formatAttachmentsForSlack(unformattedAttachments) {
             fallback: text,
             color: color
         ])
-          
-        echo "Slack attachment"
-        echo text
     }
 
     return slackAttachments
