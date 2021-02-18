@@ -184,20 +184,21 @@ def sendSlackMessage(String title, String message, String targetPlatform, Intege
     def platformEmoji = platform.getPlatformEmoji(targetPlatform)
     def color = messageColors[verbosity]
 
-    slackSend channel: "#${env.SLACK_CHANNEL}",
-        color: color,
-        message: "${extraEmoji} ${platformEmoji} <${env.BUILD_URL}/parsed_console|${currentBuild.fullDisplayName}>: ${title} ${message}"
-        attachments: formatAttachmentsForSlack(attachments)
-}
-
-def formatAttachmentsForSlack(unformattedAttachments) {
-    return [  [
+    def attachments = [
+      [
                 text: 'test',
                 fallback: 'attach.',
                 color: '#ff0000'
-              ]]
+      ]
+    ]
 
+    slackSend(channel: "#${env.SLACK_CHANNEL}",
+        color: color,
+        message: "${extraEmoji} ${platformEmoji} <${env.BUILD_URL}/parsed_console|${currentBuild.fullDisplayName}>: ${title} ${message}"
+        attachments: attachments)
+}
 
+def formatAttachmentsForSlack(unformattedAttachments) {
     def slackAttachments = []
     
     unformattedAttachments.each{ unformattedAttachment ->
