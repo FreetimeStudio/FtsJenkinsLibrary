@@ -193,7 +193,7 @@ def sendSlackMessage(String title, String message, String targetPlatform, Intege
 def formatAttachmentsForSlack(unformattedAttachments) {
     def slackAttachments = []
     
-    unformattedAttachments.warnings.each{ unformattedAttachment ->
+    unformattedAttachments.each{ unformattedAttachment ->
         def text = unformattedAttachment.message
         def color = 'neutral'
         
