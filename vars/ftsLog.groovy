@@ -191,6 +191,13 @@ def sendSlackMessage(String title, String message, String targetPlatform, Intege
 }
 
 def formatAttachmentsForSlack(unformattedAttachments) {
+    return [  [
+                text: 'test',
+                fallback: 'attach.',
+                color: '#ff0000'
+              ]]
+
+
     def slackAttachments = []
     
     unformattedAttachments.each{ unformattedAttachment ->
