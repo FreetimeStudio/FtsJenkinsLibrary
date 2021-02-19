@@ -1,14 +1,13 @@
 import net.freetimestudio.Platform
 import net.freetimestudio.BuildResult
 
-def executeScript(String command, String label)
+def executeScript(String command, String label, Boolean returnStdout = false)
 {
     if(isUnix()) {
-        sh(script: command, label: label)
-        return 
+        return sh(script: command, label: label, returnStdout: returnStdout)
     }
     
-    bat(script: command, label: label) 
+    return bat(script: command, label: label, returnStdout: returnStdout)
 }
 
 def getBuildNodeLabel(String targetPlatform) {
