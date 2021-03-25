@@ -11,12 +11,12 @@ def getSteamBuilderPath()
     return "${STEAM_SDK_PATH}/tools/ContentBuilder/builder/steamcmd.exe" 
 }
 
-def writeDepotVDF(String depotId) {        
+def writeDepotVDF(String depotId, String buildOutputPath) {        
         writeFile file: "${STEAM_SDK_PATH}/tools/ContentBuilder/scripts/depot_${depotId}.vdf", 
                     text: """"DepotBuildConfig"
                             {
                                 "DepotID" "${depotId}"
-                                "contentroot" "${BUILD_OUTPUT_PATH}"
+                                "contentroot" "${buildOutputPath}"
                                 "FileMapping"
                                 {
                                     "LocalPath" "*"
@@ -61,11 +61,12 @@ def deploy(Map config = [:])
             "Mac" : "12346",
         ],
         credentialsId: '',
-        buildComment: ''
+        buildComment: '',
+        buildOutputPath: ''
     ]
 */
     echo "Write Depot VDF"
-    writeDepotVDF(config.depotId)
+    writeDepotVDF(config.depotId, config.buildOutputPath)
     
     echo "Write App VDF"
     writeAppVDF(config.appId, config.depotId, config.buildComment)
