@@ -133,7 +133,7 @@ def packageProject(Map config = [:]) {
                 " BuildCookRun -nocompile -nocompileeditor -installed -nop4" +
                 " -project=\"${config.projectPath}\"" + 
                 " -cook -stage -archive" +
-                " -archivedirectory=\"${config.buildOutputPath}" + 
+                " -archivedirectory=\"${config.buildOutputPath}\"" + 
                 " -package -clientconfig=${config.buildConfig}" +
                 " -ue4exe=\"${ue4ExePath}\" -prereqs -nodebuginfo" + 
                 " -targetplatform=${config.target} -build -utf8output -Pak -Rocket", 
