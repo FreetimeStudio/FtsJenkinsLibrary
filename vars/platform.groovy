@@ -1,6 +1,11 @@
 import net.freetimestudio.Platform
 import net.freetimestudio.BuildResult
 
+def isNodeWithLabelOnline(String label) {
+    nodeList = nodesByLabel label: label, offline: false
+    return !nodeList.isEmpty();
+}
+
 def executeScript(String command, String label, Boolean returnStdout = false)
 {
     if(isUnix()) {
@@ -8,38 +13,6 @@ def executeScript(String command, String label, Boolean returnStdout = false)
     }
     
     return bat(script: command, label: label, returnStdout: returnStdout)
-}
-
-def getBuildNodeLabel(String targetPlatform) {
-    if(targetPlatform == Platform.Win64) {
-        return 'windows'
-    }
-
-    if(targetPlatform == Platform.Mac) {
-        return 'mac'
-    }
-
-    if(targetPlatform == Platform.iOS) {
-        return 'mac'
-    }
-
-    if(targetPlatform == Platform.Linux) {
-        return 'linux'
-    }
-
-    if(targetPlatform == Platform.Switch) {
-        return 'switch'
-    }
-    
-    if(targetPlatform == Platform.PS4) {
-        return 'ps4'
-    }
-    
-    if(targetPlatform == Platform.XboxOne) {
-        return 'xboxone'
-    }
-    
-    return 'invalid'
 }
 
 def getOutputFolder(String targetPlatform) {
