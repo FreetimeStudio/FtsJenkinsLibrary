@@ -263,7 +263,7 @@ def getLogMessageAttachments(Integer maxWarningsToShow = 5, Integer maxErrorsToS
 
     def attachments = []
     
-    def logMessages = getLogMessages(maxWarningsToShow, maxErrorsToShow, String[] ignorePatterns)
+    def logMessages = getLogMessages(maxWarningsToShow, maxErrorsToShow, ignorePatterns)
     logMessages.warnings.each{ warning -> 
         println("Warning to send: ${warning}")
         attachments.add([
