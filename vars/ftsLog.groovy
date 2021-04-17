@@ -55,16 +55,16 @@ def parseLog(String rulesPath) {
 
 def matchesAnyPattern(String text, String[] ignorePatterns)
 {
-    Boolean result = false;
+    Boolean result = false
     
     ignorePatterns.each{ pattern ->
-            if(matchesPattern(text, pattern) {
-                result = true
-                break;
-            }
+        if(matchesPattern(text, pattern)) {
+            result = true
+            break
+        }
     }
     
-    return result;
+    return result
 }
 
 def matchesPattern(String text, String pattern)
