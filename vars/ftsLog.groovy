@@ -53,7 +53,32 @@ def parseLog(String rulesPath) {
 	step([$class: 'LogParserPublisher', parsingRulesPath: "${rulesPath}", useProjectRule: false, unstableOnWarning: true])
 }
 
-def getLogMessages(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5) {
+def matchesAnyPattern(String text, String[] ignorePatterns)
+{
+    Boolean result = false;
+    
+    ignorePatterns.each{ pattern ->
+            if(matchesPattern(text, pattern) {
+                result = true
+                break;
+            }
+    }
+    
+    return result;
+}
+
+def matchesPattern(String text, String pattern)
+{
+    def lowerText = text.toLowerCase()
+    def lowerPattern = pattern.toLowerCase()
+    if(text.contains(lowerPattern)) {
+        return true
+    }
+    
+    return false
+}
+
+def getLogMessages(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5, String[] ignorePatterns=[]) {
 	def logUrl = env.BUILD_URL + 'consoleText'
 	
 	def response = httpRequest(
@@ -64,6 +89,9 @@ def getLogMessages(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5) {
 
 	def log = response.content
 	
+	def errorPatterns = ["error:", ": error"]
+	def warningPatterns = ["warning:", ": warning"]
+
 	def warnings = []
 	def errors = []
 
@@ -72,8 +100,7 @@ def getLogMessages(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5) {
 	def errorIndex = 0
 
 	logLines.each{ line ->
-		def lowerLine = line.toLowerCase()
-		if(lowerLine.contains("error:") || lowerLine.contains(": error")) {
+		if(matchesAnyPattern(line, errorPatterns) && !matchesAnyPattern(line,ignorePatterns)) {
 			errorIndex++
 			if(errorIndex > maxErrorsToShow)
 			{
@@ -84,12 +111,7 @@ def getLogMessages(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5) {
 		}
 	
 	
-		if(lowerLine.contains("warning:")) {
-		
-		    //Ignore build data missing warnings
-		    if(lowerLine.contains("_BuiltData': Can't find file.".toLowerCase())) {
-                return
-		    }
+		if(matchesAnyPattern(line, warningPatterns) && !matchesAnyPattern(line,ignorePatterns)) {
 		
 			warningIndex++
 			if(warningIndex > maxWarningsToShow)
@@ -237,11 +259,11 @@ def formatAttachmentForDiscord(unformattedAttachment) {
 }
 
 
-def getLogMessageAttachments(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5) {
+def getLogMessageAttachments(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5, String[] ignorePatterns=[]) {
 
     def attachments = []
     
-    def logMessages = getLogMessages(maxWarningsToShow, maxErrorsToShow)
+    def logMessages = getLogMessages(maxWarningsToShow, maxErrorsToShow, String[] ignorePatterns)
     logMessages.warnings.each{ warning -> 
         println("Warning to send: ${warning}")
         attachments.add([
