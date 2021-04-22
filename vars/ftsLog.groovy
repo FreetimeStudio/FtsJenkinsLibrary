@@ -53,11 +53,13 @@ def parseLog(String rulesPath) {
 	step([$class: 'LogParserPublisher', parsingRulesPath: "${rulesPath}", useProjectRule: false, unstableOnWarning: true])
 }
 
-def matchesAnyPattern(String text, String[] ignorePatterns)
+def matchesAnyPattern(String text, String[] patterns)
 {
+    return false
+
     Boolean result = false
     
-    ignorePatterns.each{ pattern ->
+    patterns.each{ pattern ->
         if(matchesPattern(text, pattern)) {
             result = true
             break
