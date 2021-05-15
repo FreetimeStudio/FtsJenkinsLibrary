@@ -115,6 +115,9 @@ def getLogMessages(Map config = [:])
 	def errorIndex = 0
 
 	logLines.each{ line ->
+	    
+        println("checking ${line}")
+
 	
 		if(checkForPatternMatch(text: line, patterns: errorPatterns) && !checkForPatternMatch(text: line, patterns: params.ignorePatterns)) {
 			errorIndex++
@@ -286,6 +289,9 @@ def getLogMessageAttachments(Map config = [:])
     def params = defaultConfig << config
 
     def attachments = []
+    
+    println("getLogMessageAttachments")
+
     
     def logMessages = getLogMessages(config)
     logMessages.warnings.each{ warning -> 
