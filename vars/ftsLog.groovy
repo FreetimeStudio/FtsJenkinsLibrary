@@ -60,12 +60,10 @@ def checkForPatternMatch(Map config = [:])
     config.patterns.each{ pattern ->
     
         if(result == true){
-            println("already found pattern")
             return
         }
     
         if(matchesPattern(config.text, pattern)) {
-            println("${config.text} matches ${pattern}")
             result = true
             return
         }
@@ -80,7 +78,6 @@ def matchesPattern(String text, String pattern)
     def lowerPattern = pattern.toLowerCase()
     
     if(lowerText.contains(lowerPattern)) {
-        println("${lowerText} contains ${lowerPattern}")
         return true
     }
     
@@ -98,8 +95,6 @@ def getLogMessages(Map config = [:])
 
 	def logUrl = env.BUILD_URL + 'consoleText'
 	
-    println("Getting log")
-
 	def response = httpRequest(
 		url: logUrl,
 		authentication: 'jenkins', 
@@ -292,9 +287,6 @@ def getLogMessageAttachments(Map config = [:])
     def params = defaultConfig << config
 
     def attachments = []
-    
-    println("getLogMessageAttachments")
-
     
     def logMessages = getLogMessages(config)
     logMessages.warnings.each{ warning -> 
