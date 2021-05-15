@@ -57,8 +57,11 @@ def checkForPatternMatch(Map config = [:])
 {
     Boolean result = false
     
+    println("checking ${config.text} against pattern ${}config.pattern}")
+    	
+
     config.patterns.each{ pattern ->
-        if(matchesPattern(config.text, pattern)) {
+        if(matchesPattern(config.text, config.pattern)) {
             result = true
             break
         }
@@ -89,6 +92,8 @@ def getLogMessages(Map config = [:])
 
 	def logUrl = env.BUILD_URL + 'consoleText'
 	
+    println("Getting log")
+
 	def response = httpRequest(
 		url: logUrl,
 		authentication: 'jenkins', 
@@ -107,7 +112,10 @@ def getLogMessages(Map config = [:])
 	def warningIndex = 0
 	def errorIndex = 0
 
+    println("Starting parsing")
+    
 	logLines.each{ line ->
+	
 		if(checkForPatternMatch(text: line, patterns: errorPatterns) && !checkForPatternMatch(text: line, patterns: params.ignorePatterns)) {
 			errorIndex++
 			if(errorIndex > params.maxErrors)
