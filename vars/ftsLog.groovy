@@ -56,11 +56,13 @@ def parseLog(String rulesPath) {
 def checkForPatternMatch(Map config = [:])
 {
     Boolean result = false
-    
-    println("checking ${config.text} against pattern ${}config.pattern}")
-    	
 
+    println("checking ${config.text}")
+    
     config.patterns.each{ pattern ->
+
+        println("\t\t\tagainst pattern ${pattern}")
+   
         if(matchesPattern(config.text, config.pattern)) {
             result = true
             break
