@@ -58,7 +58,11 @@ def checkForPatternMatch(Map config = [:])
     Boolean result = false
 
     config.patterns.each{ pattern ->
-        if(result){
+    
+        println("checking ${config.text} == ${pattern}")
+    
+        if(result == true){
+            println("already found pattern")
             return
         }
     
@@ -116,7 +120,6 @@ def getLogMessages(Map config = [:])
 
 	logLines.each{ line ->
 	    
-        println("checking ${line}")
 
 	
 		if(checkForPatternMatch(text: line, patterns: errorPatterns) && !checkForPatternMatch(text: line, patterns: params.ignorePatterns)) {
