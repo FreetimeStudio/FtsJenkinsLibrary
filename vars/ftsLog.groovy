@@ -261,11 +261,19 @@ def formatAttachmentForDiscord(unformattedAttachment) {
 }
 
 
-def getLogMessageAttachments(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5, String[] ignorePatterns=[]) {
+def getLogMessageAttachments(Map config = [:])
+{
+    def defaultConfig = [
+        maxWarnings: 5,
+        maxErrors: 5,
+        ignorePatterns: []
+    ]
+
+    def params = defaultConfig << config
 
     def attachments = []
     
-    def logMessages = getLogMessages(maxWarningsToShow, maxErrorsToShow, ignorePatterns)
+    def logMessages = getLogMessages(params.maxWarnings, params.maxErrors, params.ignorePatterns)
     logMessages.warnings.each{ warning -> 
         println("Warning to send: ${warning}")
         attachments.add([
