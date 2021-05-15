@@ -55,10 +55,6 @@ def parseLog(String rulesPath) {
 
 def matchesAnyPattern(Map config = [:])
 {
-    return false
-
-//String text, String[] patterns
-
     Boolean result = false
     
     patterns.each{ pattern ->
