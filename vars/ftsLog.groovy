@@ -79,10 +79,8 @@ def matchesPattern(String text, String pattern)
     def lowerText = text.toLowerCase()
     def lowerPattern = pattern.toLowerCase()
     
-    println("checking ${lowerText} == ${lowerPattern}")
-    
-    
     if(text.contains(lowerPattern)) {
+        println("${lowerText} contains ${lowerPattern}")
         return true
     }
     
