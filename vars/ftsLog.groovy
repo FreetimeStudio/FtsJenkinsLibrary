@@ -63,7 +63,7 @@ def checkForPatternMatch(Map config = [:])
 
         println("\t\t\tagainst pattern ${pattern}")
    
-        if(matchesPattern(config.text, config.pattern)) {
+        if(matchesPattern(config.text, pattern)) {
             result = true
             break
         }
