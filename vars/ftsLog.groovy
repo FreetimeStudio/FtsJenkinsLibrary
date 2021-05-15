@@ -53,7 +53,7 @@ def parseLog(String rulesPath) {
 	step([$class: 'LogParserPublisher', parsingRulesPath: "${rulesPath}", useProjectRule: false, unstableOnWarning: true])
 }
 
-def matchesAnyPattern(Map config = [:])
+def checkForPatternMatch(Map config = [:])
 {
     Boolean result = false
     
@@ -108,7 +108,7 @@ def getLogMessages(Map config = [:])
 	def errorIndex = 0
 
 	logLines.each{ line ->
-		if(matchesAnyPattern(text: line, patterns: errorPatterns) && !matchesAnyPattern(text: line, patterns: params.ignorePatterns)) {
+		if(checkForPatternMatch(text: line, patterns: errorPatterns) && !checkForPatternMatch(text: line, patterns: params.ignorePatterns)) {
 			errorIndex++
 			if(errorIndex > params.maxErrors)
 			{
@@ -119,7 +119,7 @@ def getLogMessages(Map config = [:])
 		}
 	
 	
-		if(matchesAnyPattern(text: line, patterns: warningPatterns) && !matchesAnyPattern(text: line, patterns: params.ignorePatterns)) {
+		if(checkForPatternMatch(text: line, patterns: warningPatterns) && !checkForPatternMatch(text: line, patterns: params.ignorePatterns)) {
 		
 			warningIndex++
 			if(warningIndex > params.maxWarnings)
