@@ -58,9 +58,14 @@ def checkForPatternMatch(Map config = [:])
     Boolean result = false
 
     config.patterns.each{ pattern ->
+        if(result){
+            return
+        }
+    
         if(matchesPattern(config.text, pattern)) {
+            println("${config.text} matches ${pattern}")
             result = true
-            break
+            return
         }
     }
     
