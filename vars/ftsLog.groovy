@@ -57,12 +57,7 @@ def checkForPatternMatch(Map config = [:])
 {
     Boolean result = false
 
-    println("checking ${config.text}")
-    
     config.patterns.each{ pattern ->
-
-        println("\t\t\tagainst pattern ${pattern}")
-   
         if(matchesPattern(config.text, pattern)) {
             result = true
             break
@@ -114,8 +109,6 @@ def getLogMessages(Map config = [:])
 	def warningIndex = 0
 	def errorIndex = 0
 
-    println("Starting parsing")
-    
 	logLines.each{ line ->
 	
 		if(checkForPatternMatch(text: line, patterns: errorPatterns) && !checkForPatternMatch(text: line, patterns: params.ignorePatterns)) {
