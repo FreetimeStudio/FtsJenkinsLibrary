@@ -57,8 +57,8 @@ def matchesAnyPattern(Map config = [:])
 {
     Boolean result = false
     
-    patterns.each{ pattern ->
-        if(matchesPattern(text, pattern)) {
+    config.patterns.each{ pattern ->
+        if(matchesPattern(config.text, pattern)) {
             result = true
             break
         }
