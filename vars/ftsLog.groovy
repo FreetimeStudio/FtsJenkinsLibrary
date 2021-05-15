@@ -59,8 +59,6 @@ def checkForPatternMatch(Map config = [:])
 
     config.patterns.each{ pattern ->
     
-        println("checking ${config.text} == ${pattern}")
-    
         if(result == true){
             println("already found pattern")
             return
@@ -80,6 +78,10 @@ def matchesPattern(String text, String pattern)
 {
     def lowerText = text.toLowerCase()
     def lowerPattern = pattern.toLowerCase()
+    
+    println("checking ${lowerText} == ${lowerPattern}")
+    
+    
     if(text.contains(lowerPattern)) {
         return true
     }
