@@ -80,7 +80,15 @@ def matchesPattern(String text, String pattern)
     return false
 }
 
-def getLogMessages(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5, String[] ignorePatterns=[]) {
+def getLogMessages(Map config = [:]) 
+{
+    def defaultConfig = [
+        maxWarnings: 5,
+        maxErrors: 5,
+        ignorePatterns: []
+    ]
+    def params = defaultConfig << config
+
 	def logUrl = env.BUILD_URL + 'consoleText'
 	
 	def response = httpRequest(
@@ -102,9 +110,9 @@ def getLogMessages(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5, S
 	def errorIndex = 0
 
 	logLines.each{ line ->
-		if(matchesAnyPattern(line, errorPatterns) && !matchesAnyPattern(line,ignorePatterns)) {
+		if(matchesAnyPattern(line, errorPatterns) && !matchesAnyPattern(line,params.ignorePatterns)) {
 			errorIndex++
-			if(errorIndex > maxErrorsToShow)
+			if(errorIndex > params.maxErrors)
 			{
 				return
 			}
@@ -113,10 +121,10 @@ def getLogMessages(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5, S
 		}
 	
 	
-		if(matchesAnyPattern(line, warningPatterns) && !matchesAnyPattern(line,ignorePatterns)) {
+		if(matchesAnyPattern(line, warningPatterns) && !matchesAnyPattern(line,params.ignorePatterns)) {
 		
 			warningIndex++
-			if(warningIndex > maxWarningsToShow)
+			if(warningIndex > params.maxWarnings)
 			{
 				return
 			}
@@ -125,21 +133,21 @@ def getLogMessages(Integer maxWarningsToShow = 5, Integer maxErrorsToShow = 5, S
 		}
 	}
 	
-	if(warningIndex > maxWarningsToShow) {
-		def remainingWarnings = warningIndex - maxWarningsToShow
+	if(warningIndex > params.maxWarnings) {
+		def remainingWarnings = warningIndex - params.maxWarnings
 		
 		warnings.add("... and ${remainingWarnings} more")
 	}
 	
-	if(errorIndex > maxErrorsToShow) {
-		def remainingErrors = errorIndex - maxErrorsToShow
+	if(errorIndex > params.maxErrors) {
+		def remainingErrors = errorIndex - params.maxErrors
 		
 		errors.add("... and ${remainingErrors} more")
 	}
 	
 	def messages = {}
 	messages.errors = errors
-	messages.warnings =warnings
+	messages.warnings = warnings
 	return messages
 }
 
@@ -273,7 +281,7 @@ def getLogMessageAttachments(Map config = [:])
 
     def attachments = []
     
-    def logMessages = getLogMessages(params.maxWarnings, params.maxErrors, params.ignorePatterns)
+    def logMessages = getLogMessages(config)
     logMessages.warnings.each{ warning -> 
         println("Warning to send: ${warning}")
         attachments.add([
