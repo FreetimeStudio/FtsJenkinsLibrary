@@ -47,7 +47,7 @@ def writeAppVDF(String appId, String depotId, String buildComment) {
 
 def upload(String appId, String credentialsId) {
     withCredentials([usernamePassword(credentialsId: credentialsId, passwordVariable: 'steamPass', usernameVariable: 'steamUser')]) {
-       bat(script: '"${STEAM_SDK_PATH}/tools/ContentBuilder/builder/steamcmd.exe" "+login" "${steamUser}" "${steamPass}" "+run_app_build" "${STEAM_SDK_PATH}/tools/ContentBuilder/scripts/app_${appId}.vdf" "+quit"')
+       bat(script: '"$STEAM_SDK_PATH/tools/ContentBuilder/builder/steamcmd.exe" "+login" "$steamUser" "$steamPass" "+run_app_build" "$STEAM_SDK_PATH/tools/ContentBuilder/scripts/app_$appId.vdf" "+quit"')
    }
 }
 
