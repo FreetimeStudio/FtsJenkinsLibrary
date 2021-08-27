@@ -27,7 +27,7 @@ def writeDepotVDF(String depotId, String buildOutputPath) {
                             }""".stripIndent()
 }
 
-def writeAppVDF(String appId, String depotId, String buildComment) {
+def writeAppVDF(String appId, String depotId, String buildComment, String branch) {
         writeFile file: "${STEAM_SDK_PATH}/tools/ContentBuilder/scripts/app_${appId}.vdf", 
                     text: """"appbuild"
                             {
@@ -35,7 +35,7 @@ def writeAppVDF(String appId, String depotId, String buildComment) {
                                 "desc" "${env.BUILD_VERSION}        ${buildComment}"
                                 "buildoutput" "${STEAM_SDK_PATH}/tools/ContentBuilder/output"
                                 "contentroot" ""
-                                "setlive" "develop"
+                                "setlive" "${branch}"
                                 "preview" "0"
                                 "local"	""
                                 "depots"
@@ -69,7 +69,7 @@ def deploy(Map config = [:])
     writeDepotVDF(config.depotId, config.buildOutputPath)
     
     echo "Write App VDF"
-    writeAppVDF(config.appId, config.depotId, config.buildComment)
+    writeAppVDF(config.appId, config.depotId, config.buildComment, config.branch)
 
     echo "upload"
     upload(config.appId, config.credentialsId)
