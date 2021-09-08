@@ -47,7 +47,7 @@ def writeAppVDF(String appId, String depotId, String buildComment, String branch
 
 def upload(String appId, String credentialsId) {
     withCredentials([usernamePassword(credentialsId: credentialsId, passwordVariable: 'steamPass', usernameVariable: 'steamUser')]) {
-        let builderPath = getSteamBuilderPath();        
+        def builderPath = getSteamBuilderPath();        
         if(isUnix()) {
             sh(script: "\"${builderPath}\" \"+login\" \"${steamUser}\" \"${steamPass}\" \"+run_app_build\" \"${STEAM_SDK_PATH}/tools/ContentBuilder/scripts/app_${appId}.vdf\" \"+quit\"")
         } else {
