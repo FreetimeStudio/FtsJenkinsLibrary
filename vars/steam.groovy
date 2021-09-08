@@ -5,7 +5,7 @@ import net.freetimestudio.Platform
 def getSteamBuilderPath()
 {
     if(isUnix()) {
-        return "${STEAM_SDK_PATH}/tools/ContentBuilder/builder_osx/steamcmd.sh" 
+        return "${STEAM_SDK_PATH}/tools/ContentBuilder/builder_osx/steamcmd" 
     }
     
     return "${STEAM_SDK_PATH}/tools/ContentBuilder/builder/steamcmd.exe" 
@@ -47,7 +47,12 @@ def writeAppVDF(String appId, String depotId, String buildComment, String branch
 
 def upload(String appId, String credentialsId) {
     withCredentials([usernamePassword(credentialsId: credentialsId, passwordVariable: 'steamPass', usernameVariable: 'steamUser')]) {
-       bat(script: "\"${STEAM_SDK_PATH}/tools/ContentBuilder/builder/steamcmd.exe\" \"+login\" \"${steamUser}\" \"${steamPass}\" \"+run_app_build\" \"${STEAM_SDK_PATH}/tools/ContentBuilder/scripts/app_${appId}.vdf\" \"+quit\"")
+        let builderPath = getSteamBuilderPath();        
+        if(isUnix()) {
+            sh(script: "\"${builderPath}\" \"+login\" \"${steamUser}\" \"${steamPass}\" \"+run_app_build\" \"${STEAM_SDK_PATH}/tools/ContentBuilder/scripts/app_${appId}.vdf\" \"+quit\"")
+        } else {
+            bat(script: "\"${builderPath}\" \"+login\" \"${steamUser}\" \"${steamPass}\" \"+run_app_build\" \"${STEAM_SDK_PATH}/tools/ContentBuilder/scripts/app_${appId}.vdf\" \"+quit\"")
+        }
    }
 }
 
