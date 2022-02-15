@@ -29,6 +29,10 @@ def getEditorPlatform(String targetPlatform) {
         return 'Win64'
     }
 
+    if(targetPlatform == Platform.Android) {
+        return 'Win64'
+    }
+
     if(targetPlatform == Platform.Switch) {
         return 'Win64'
     }

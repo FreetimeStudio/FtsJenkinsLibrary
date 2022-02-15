@@ -32,6 +32,14 @@ def getOutputFolder(String targetPlatform) {
         return  'SwitchNoEditor'
     }
     
+    if ( targetPlatform == Platform.iOS ) {
+        return  'iOSNoEditor'
+    }
+    
+    if ( targetPlatform == Platform.Android ) {
+        return  'AndroidNoEditor'
+    }
+    
     return ''
 }
 
@@ -67,6 +75,14 @@ def getPlatformEmoji(String targetPlatform) {
         return  "${env.ITCH_EMOJI}"
     }
     
+    if ( targetPlatform == Platform.iOS ) {
+        return  "${env.IOS_EMOJI}"
+    }
+    
+    if ( targetPlatform == Platform.Android ) {
+        return  "${env.ANDROID_EMOJI}"
+    }
+	
     return ''
 }
 

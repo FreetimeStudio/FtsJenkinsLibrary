@@ -11,4 +11,5 @@ class Platform {
     static final String Steam = 'Steam'
     static final String Itch = 'Itch'
     static final String Oculus = 'Oculus'
+    static final String Android = 'Android'
 }
