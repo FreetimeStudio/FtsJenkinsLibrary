@@ -3,6 +3,7 @@ import net.freetimestudio.LogVerbosity
 //Needs DISCORD_WEBHOOK environment variable 
 //BUILD_FRIENDLY_NAME
 //SLACK_CHANNEL
+//Needs jenkins credentials "jenkins" of type user:password
 
 def setLogVerbosity(Integer newVerbosity) {
     env.LOG_VERBOSITY = newVerbosity

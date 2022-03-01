@@ -206,6 +206,13 @@ def validateAssets(Map config = [:]) {
     }
 }
 
+def runProjectTests(Map config = [:]) {
+    lock(resource: "UnrealBuildTool-${NODE_NAME}") {
+        def editorCMD = getEditorCMDPath(config)
+        platform.executeScript("\"${editorCMD}\" \"${config.projectPath}\" -game -ExecCmds=\"Automation RunTests Project\" -unattended -nopause -testexit=\"Automation Test Queue Empty\" -log  -log=AutomationTests.log", 'Run Project Automation Tests')
+    }
+}
+
 def lintProject(Map config = [:]) {
     try {
         catchError(buildResult: BuildResult.Success, stageResult: BuildResult.Failure) { //Linter returns 2 for warnings
