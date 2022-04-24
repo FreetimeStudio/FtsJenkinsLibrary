@@ -99,9 +99,17 @@ def getUE4ExePath(Map config = [:]) {
     String ue4ExePath = getUE4DirectoryFolder(config) + "/Engine/Binaries"
     
     if ( isUnix() ) {
+		if(config.ueVersion.startsWith("5")) {
+			return ue4ExePath + "/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor"
+		}
+	
         return ue4ExePath + "/Mac/UE4Editor.app/Contents/MacOS/UE4Editor"
     }
     
+	if(config.ueVersion.startsWith("5")) {
+		return 'UnrealEditor-Cmd.exe'
+	}
+	
     return 'UE4Editor-Cmd.exe'
 }
 
@@ -109,9 +117,17 @@ def getEditorCMDPath(Map config = [:]) {
     String cmdPath = getUE4DirectoryFolder(config) + "/Engine/Binaries"
     
     if ( isUnix() ) {
+		if(config.ueVersion.startsWith("5")) {
+			return  cmdPath + "/Mac/UnrealEditor"
+		}
+	
         return  cmdPath + "/Mac/UE4Editor-Cmd"
     }
-    
+
+	if(config.ueVersion.startsWith("5")) {
+		return  cmdPath + "/Win64/UnrealEditor-Cmd.exe"
+	}
+	
     return  cmdPath + "/Win64/UE4Editor-Cmd.exe"
 }
 
