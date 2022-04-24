@@ -80,13 +80,19 @@ def getUATPath(Map config = [:]) {
 def getUBTPath(Map config = [:]) {
     String ubtPath = getUE4DirectoryFolder(config) + "/Engine/Binaries"
     
+	String extraPath = ""
+	
+	if(config.ueVersion.startsWith("5")) {
+		extraPath = "UnrealBuildTool/"
+	}
+	
     if ( isUnix() ) {
         String monoPath = getUE4DirectoryFolder(config) + "/Engine/Build/BatchFiles/Mac/RunMono.sh"
 
         ubtPath = monoPath + "\" \"" + ubtPath
     }
 
-    return ubtPath + "/DotNET/UnrealBuildTool.exe"
+    return ubtPath + "/DotNET/"+extraPath+"UnrealBuildTool.exe"
 }
 
 def getUE4ExePath(Map config = [:]) {
