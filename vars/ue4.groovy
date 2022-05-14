@@ -11,6 +11,14 @@ config.target
 config.projectPath
 */
 
+def isUnreal5(Map config = [:]) {
+	if(config.ueVersion.startsWith("5")) {
+		return true
+	}
+	
+	return false
+}
+
 //Get the editor runtime for this platform
 def getEditorPlatform(String targetPlatform) {
     if(targetPlatform == Platform.Win64) {
@@ -82,7 +90,7 @@ def getUBTPath(Map config = [:]) {
     
 	String extraPath = ""
 	
-	if(config.ueVersion.startsWith("5")) {
+	if(isUnreal5(config)) {
 		extraPath = "UnrealBuildTool/"
 	}
 	
@@ -95,18 +103,18 @@ def getUBTPath(Map config = [:]) {
     return ubtPath + "/DotNET/"+extraPath+"UnrealBuildTool.exe"
 }
 
-def getUE4ExePath(Map config = [:]) {
+def getUnrealExePath(Map config = [:]) {
     String ue4ExePath = getUE4DirectoryFolder(config) + "/Engine/Binaries"
     
     if ( isUnix() ) {
-		if(config.ueVersion.startsWith("5")) {
+		if(isUnreal5(config)) {
 			return ue4ExePath + "/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor"
 		}
 	
         return ue4ExePath + "/Mac/UE4Editor.app/Contents/MacOS/UE4Editor"
     }
     
-	if(config.ueVersion.startsWith("5")) {
+	if(isUnreal5(config)) {
 		return 'UnrealEditor-Cmd.exe'
 	}
 	
@@ -117,14 +125,14 @@ def getEditorCMDPath(Map config = [:]) {
     String cmdPath = getUE4DirectoryFolder(config) + "/Engine/Binaries"
     
     if ( isUnix() ) {
-		if(config.ueVersion.startsWith("5")) {
+		if(isUnreal5(config)) {
 			return  cmdPath + "/Mac/UnrealEditor"
 		}
 	
         return  cmdPath + "/Mac/UE4Editor-Cmd"
     }
 
-	if(config.ueVersion.startsWith("5")) {
+	if(isUnreal5(config)) {
 		return  cmdPath + "/Win64/UnrealEditor-Cmd.exe"
 	}
 	
@@ -151,19 +159,26 @@ def packageProject(Map config = [:]) {
 
     lock(resource: "UnrealBuildTool-${NODE_NAME}") {
         String uatPath = getUATPath(config)
-        String ue4ExePath = getUE4ExePath(config)
+        String ueExePath = getUnrealExePath(config)
+		
+		String script = "\"${uatPath}\"" +
+			" -ScriptsForProject=\"${config.projectPath}\"" +
+			" BuildCookRun -nocompile -nocompileeditor -installed -nop4" +
+			" -project=\"${config.projectPath}\"" + 
+			" -cook -stage -archive" +
+			" -archivedirectory=\"${config.buildOutputPath}\"" + 
+			" -package -clientconfig=${config.buildConfig}" +
+			" -targetplatform=${config.target} -build -utf8output -Pak -Rocket -prereqs -nodebuginfo"
+
         
-        platform.executeScript(
-            "\"${uatPath}\"" +
-                " -ScriptsForProject=\"${config.projectPath}\"" +
-                " BuildCookRun -nocompile -nocompileeditor -installed -nop4" +
-                " -project=\"${config.projectPath}\"" + 
-                " -cook -stage -archive" +
-                " -archivedirectory=\"${config.buildOutputPath}\"" + 
-                " -package -clientconfig=${config.buildConfig}" +
-                " -ue4exe=\"${ue4ExePath}\" -prereqs -nodebuginfo" + 
-                " -targetplatform=${config.target} -build -utf8output -Pak -Rocket", 
-            'Package Project')
+		if(isUnreal5(config)) {
+			script = script + " -unrealexe=\"${ueExePath}\""
+		}
+		else {
+			script = script + " -ue4exe=\"${ueExePath}\""
+		}
+		
+        platform.executeScript(script, 'Package Project')
     }
     
     echo "done packageProject"
