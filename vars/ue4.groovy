@@ -246,7 +246,7 @@ def validateAssets(Map config = [:]) {
 def runProjectTests(Map config = [:]) {
     lock(resource: "UnrealBuildTool-${NODE_NAME}") {
         def editorCMD = getEditorCMDPath(config)
-        platform.executeScript("\"${editorCMD}\" \"${config.projectPath}\" -game -ExecCmds=\"Automation RunTests Project\" -unattended -nopause -NullRHI -testexit=\"Automation Test Queue Empty\" -log", 'Run Project Automation Tests')
+        platform.executeScript("\"${editorCMD}\" \"${config.projectPath}\" -game -ExecCmds=\"Automation RunTests Project\" -unattended -nopause -NullRHI -testexit=\"Automation Test Queue Empty\" -log -ReportOutputPath=\"${config.reportPath}\"", 'Run Project Automation Tests')
     }
 }
 
