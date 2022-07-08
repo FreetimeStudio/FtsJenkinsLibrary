@@ -130,7 +130,7 @@ def getEditorCMDPath(Map config = [:]) {
     
     if ( isUnix() ) {
 		if(isUnreal5(config)) {
-			return  cmdPath + "/Mac/UnrealEditor"
+			return  cmdPath + "/Mac/UnrealEditor-Cmd"
 		}
 	
         return  cmdPath + "/Mac/UE4Editor-Cmd"
