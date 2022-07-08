@@ -112,7 +112,7 @@ def getUnrealExePath(Map config = [:]) {
     
     if ( isUnix() ) {
 		if(isUnreal5(config)) {
-			return ue4ExePath + "/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor"
+			return ue4ExePath + "/Mac/UnrealEditor.app/Contents/MacOS/UnrealEditor.app"
 		}
 	
         return ue4ExePath + "/Mac/UE4Editor.app/Contents/MacOS/UE4Editor"
