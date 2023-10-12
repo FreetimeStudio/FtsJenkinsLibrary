@@ -1,15 +1,8 @@
 import net.freetimestudio.Platform
 import net.freetimestudio.LogVerbosity
 import net.freetimestudio.BuildResult
-
-// env.UE_PATH
-
-/*
-config.uePath
-config.ueVersion
-config.target
-config.projectPath
-*/
+import groovy.xml.*
+import groovy.json.*
 
 def isUnreal5(Map config = [:]) {
 	if(config.ueVersion.startsWith("5")) {
@@ -159,8 +152,6 @@ def buildEditorBinaries(Map config = [:]) {
 
 def packageProject(Map config = [:]) {
     
-    echo "packageProject"
-
     lock(resource: "UnrealBuildTool-${NODE_NAME}") {
         String uatPath = getUATPath(config)
         String ueExePath = getUnrealExePath(config)
@@ -184,8 +175,6 @@ def packageProject(Map config = [:]) {
 		
         platform.executeScript(script, 'Package Project')
     }
-    
-    echo "done packageProject"
 }
 
 /*
@@ -240,6 +229,22 @@ def uploadEditorBinaries(Map config = [:]) {
 
 }
 
+def packagePlugin(Map config = [:]) {
+    lock(resource: "UnrealBuildTool-${NODE_NAME}") {
+        String uatPath = getUATPath(config)
+        String ueExePath = getUnrealExePath(config)
+		
+		String script = "\"${uatPath}\"" +
+			" BuildPlugin" +
+			" -Plugin=\"${config.pluginPath}\"" +
+			" -CreateSubFolder" +
+			" -Package=\"${config.buildOutputPath}\""
+
+        platform.executeScript(script, 'Package Plugin')
+    }
+}
+
+
 def validateAssets(Map config = [:]) {
     lock(resource: "UnrealBuildTool-${NODE_NAME}") {
         def editorCMD = getEditorCMDPath(config)
@@ -282,3 +287,51 @@ def lintProject(Map config = [:]) {
         println(violationReport)
     }
 }
+
+
+//Credit for original code https://www.emidee.net/ue4/2018/11/13/UE4-Unit-Tests-in-Jenkins.html
+def convertUnitTestsReport(String JsonFilePath, String XmlOutPath) {
+    def json = readFile file: "${JsonFilePath}", encoding: "UTF-8"
+    // Needed because the JSON is encoded in UTF-8 with BOM
+
+    json = json.replace( "\uFEFF", "" );
+
+    def xml_content = getJUnitXMLContentFromJSON( json )
+
+    writeFile file: "${XmlOutPath}", text: xml_content.toString()
+}
+
+//Credit for original code https://www.emidee.net/ue4/2018/11/13/UE4-Unit-Tests-in-Jenkins.html
+@NonCPS
+def getJUnitXMLContentFromJSON( String json_content ) {
+    def j = new JsonSlurper().parseText( json_content )
+    
+    def sw = new StringWriter()
+    def builder = new MarkupBuilder( sw )
+
+    builder.doubleQuotes = true
+    builder.mkp.xmlDeclaration version: "1.0", encoding: "utf-8"
+
+    builder.testsuites( time: j.totalDuration ) {
+		builder.testsuite( tests: j.succeeded + j.failed, failures: j.failed, time: j.totalDuration ) {
+			for ( test in j.tests ) {
+				builder.testcase( name: test.testDisplayName, classname: test.fullTestPath, status: test.state, time: test.duration ) {
+					if(test.state == "Fail") {
+						def errorMessages = ""
+						for ( entry in test.entries ) {
+							if (entry.event.type == "Error") {
+								errorMessages = "${errorMessages} ${entry.event.message}\n"
+							}
+						}
+
+						//echo "Warning: Failed Automation Test \"${test.testDisplayName}\": ${errorMessages}" 
+						builder.failure( message: errorMessages, type: "Error", "" )
+					}
+				}
+			}
+		} 
+	}
+	
+    return sw.toString()
+}
+
