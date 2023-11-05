@@ -42,6 +42,10 @@ def getEditorPlatform(String targetPlatform) {
         return 'Win64'
     }
     
+    if(targetPlatform == Platform.PS5) {
+        return 'Win64'
+    }
+    
     if(targetPlatform == Platform.XboxOne) {
         return 'Win64'
     }
