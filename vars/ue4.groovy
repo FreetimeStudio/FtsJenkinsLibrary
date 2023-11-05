@@ -59,6 +59,7 @@ def getUE4DirectoryFolder(Map config = [:]) {
     
     if ( config.target == Platform.Switch
       || config.target == Platform.PS4
+      || config.target == Platform.PS5
       || config.target == Platform.XboxOne
       ) {
         uePath = uePath + "/Source"
