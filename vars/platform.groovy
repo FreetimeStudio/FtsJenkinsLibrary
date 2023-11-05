@@ -63,6 +63,14 @@ def getPlatformEmoji(String targetPlatform) {
         return  "${env.SWITCH_EMOJI}"
     }
 
+    if ( targetPlatform == Platform.PS4 ) {
+        return  "${env.PS4_EMOJI}"
+    }
+
+    if ( targetPlatform == Platform.PS5 ) {
+        return  "${env.PS5_EMOJI}"
+    }
+
     if ( targetPlatform == Platform.Oculus ) {
         return  "${env.OCULUS_EMOJI}"
     }
