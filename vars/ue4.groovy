@@ -94,7 +94,7 @@ def getUBTPath(Map config = [:]) {
 	
     if ( isUnix() ) {
 		if(isUnreal5(config)) {
-			return ubtPath + "ThirdParty/DotNET/6.0.302/mac-x64/dotnet \""+ubtPath+"/DotNET/UnrealBuildTool/UnrealBuildTool.dll"
+			return "\"${ubtPath}/ThirdParty/DotNET/6.0.302/mac-x64/dotnet\" \"${ubtPath}/DotNET/UnrealBuildTool/UnrealBuildTool.dll\""
 		}
 
         String monoPath = getUE4DirectoryFolder(config) + "/Engine/Build/BatchFiles/Mac/RunMono.sh"
@@ -102,7 +102,7 @@ def getUBTPath(Map config = [:]) {
         ubtPath = monoPath + "\" \"" + ubtPath
     }
 	
-    return ubtPath + "/DotNET/"+extraPath+"UnrealBuildTool.exe"
+	return "\"${ubtPath}/DotNET/${extraPath}/UnrealBuildTool.exe\""
 }
 
 def getUnrealExePath(Map config = [:]) {
@@ -149,7 +149,7 @@ def buildEditorBinaries(Map config = [:]) {
         String editorPlatform = getEditorPlatform(config.target)
 
         platform.executeScript(
-            "\"${ubtPath}\" Development ${editorPlatform} -Project=\"${config.projectPath}\"" + 
+            "${ubtPath} Development ${editorPlatform} -Project=\"${config.projectPath}\"" + 
                 " -TargetType=Editor -Progress -NoHotReloadFromIDE", 
             'Compile Editor Binaries')
     }
