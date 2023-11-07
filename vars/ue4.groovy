@@ -94,14 +94,14 @@ def getUBTPath(Map config = [:]) {
 	
     if ( isUnix() ) {
 		if(isUnreal5(config)) {
-			return ubtPath + "/DotNET/"+extraPath+"UnrealBuildTool"
+			return ubtPath + "ThirdParty/DotNET/6.0.302/mac-x64/dotnet \""+ubtPath+"/DotNET/UnrealBuildTool/UnrealBuildTool.dll\""
 		}
 
         String monoPath = getUE4DirectoryFolder(config) + "/Engine/Build/BatchFiles/Mac/RunMono.sh"
 
         ubtPath = monoPath + "\" \"" + ubtPath
     }
-
+	
     return ubtPath + "/DotNET/"+extraPath+"UnrealBuildTool.exe"
 }
 
