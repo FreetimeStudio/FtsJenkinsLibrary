@@ -122,9 +122,9 @@ def getUBTPath(Map config = [:]) {
 			
 			println("Dot Net Check")
 			
-			if(isVersionOrAbove(config, 5, 5)) {
+			//if(isVersionOrAbove(config, 5, 5)) {
 				dotnetVersion = "8.0.300"
-			}
+			//}
 		
 			return "\"${ubtPath}/ThirdParty/DotNET/${dotnetVersion}/mac-x64/dotnet\" \"${ubtPath}/DotNET/UnrealBuildTool/UnrealBuildTool.dll\""
 		}
