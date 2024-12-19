@@ -12,6 +12,21 @@ def isUnreal5(Map config = [:]) {
 	return false
 }
 
+def isVersionOrAbove(Map config = [:], Integer MajorVersion, Integer MinorVersion) {
+	
+	def (major, minor) = config.ueVersion.tokenize( '.' )
+
+	if(major.toInteger() < MajorVersion) {
+		return false
+	}
+	
+	if(minor.toInteger() < MinorVersion) {
+		return false
+	}
+	
+	return true
+}
+
 //Get the editor runtime for this platform
 def getEditorPlatform(String targetPlatform) {
     if(targetPlatform == Platform.Win64) {
@@ -50,6 +65,10 @@ def getEditorPlatform(String targetPlatform) {
         return 'Win64'
     }
     
+    if(targetPlatform == Platform.XSX) {
+        return 'Win64'
+    }
+    
     return 'invalid'
 }
 
@@ -65,6 +84,7 @@ def getUE4DirectoryFolder(Map config = [:]) {
       || config.target == Platform.PS4
       || config.target == Platform.PS5
       || config.target == Platform.XboxOne
+      || config.target == Platform.XSX
       ) {
         uePath = uePath + "/Source"
     }
@@ -94,7 +114,14 @@ def getUBTPath(Map config = [:]) {
 	
     if ( isUnix() ) {
 		if(isUnreal5(config)) {
-			return "\"${ubtPath}/ThirdParty/DotNET/6.0.302/mac-x64/dotnet\" \"${ubtPath}/DotNET/UnrealBuildTool/UnrealBuildTool.dll\""
+		
+			String dotnetVersion = "6.0.302"
+			
+			if(isVersionOrAbove(config, 5, 5)) {
+				dotnetVersion = "8.0.300"
+			}
+		
+			return "\"${ubtPath}/ThirdParty/DotNET/${dotnetVersion}/mac-x64/dotnet\" \"${ubtPath}/DotNET/UnrealBuildTool/UnrealBuildTool.dll\""
 		}
 
         String monoPath = getUE4DirectoryFolder(config) + "/Engine/Build/BatchFiles/Mac/RunMono.sh"

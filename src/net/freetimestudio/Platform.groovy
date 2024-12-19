@@ -9,6 +9,7 @@ class Platform {
     static final String PS4 = 'PS4'
     static final String PS5 = 'PS5'
     static final String XboxOne = 'XBoxOne'
+    static final String XSX = 'XSX'
     static final String Steam = 'Steam'
     static final String Itch = 'Itch'
     static final String Oculus = 'Oculus'
