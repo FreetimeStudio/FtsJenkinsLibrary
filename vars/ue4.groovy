@@ -16,6 +16,9 @@ def isVersionOrAbove(Map config = [:], Integer MajorVersion, Integer MinorVersio
 	
 	def (major, minor) = config.ueVersion.tokenize( '.' )
 
+	println("Major ${major} Minor ${minor}")
+
+
 	if(major.toInteger() < MajorVersion) {
 		return false
 	}
