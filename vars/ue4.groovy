@@ -16,9 +16,6 @@ def isVersionOrAbove(Map config = [:], Integer MajorVersion, Integer MinorVersio
 	
 	def (major, minor) = config.ueVersion.tokenize( '.' )
 
-	println("Major ${major} Minor ${minor}")
-
-
 	if(major.toInteger() < MajorVersion) {
 		return false
 	}
@@ -120,11 +117,9 @@ def getUBTPath(Map config = [:]) {
 		
 			String dotnetVersion = "6.0.302"
 			
-			println("Dot Net Check")
-			
-			//if(isVersionOrAbove(config, 5, 5)) {
+			if(isVersionOrAbove(config, 5, 5)) {
 				dotnetVersion = "8.0.300"
-			//}
+			}
 		
 			return "\"${ubtPath}/ThirdParty/DotNET/${dotnetVersion}/mac-x64/dotnet\" \"${ubtPath}/DotNET/UnrealBuildTool/UnrealBuildTool.dll\""
 		}
