@@ -120,6 +120,8 @@ def getUBTPath(Map config = [:]) {
 		
 			String dotnetVersion = "6.0.302"
 			
+			println("Dot Net Check")
+			
 			if(isVersionOrAbove(config, 5, 5)) {
 				dotnetVersion = "8.0.300"
 			}
