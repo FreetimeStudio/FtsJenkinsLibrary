@@ -188,6 +188,8 @@ def packageProject(Map config = [:]) {
         String uatPath = getUATPath(config)
         String ueExePath = getUnrealExePath(config)
 		
+		String extraFlags = config.getOrDefault("extraFlags", "-nodebuginfo")
+		
 		String script = "\"${uatPath}\"" +
 			" -ScriptsForProject=\"${config.projectPath}\"" +
 			" BuildCookRun -nocompile -nocompileeditor -installed -nop4" +
@@ -195,7 +197,7 @@ def packageProject(Map config = [:]) {
 			" -cook -stage -archive" +
 			" -archivedirectory=\"${config.buildOutputPath}\"" + 
 			" -package -clientconfig=${config.buildConfig}" +
-			" -targetplatform=${config.target} -build -utf8output -Pak -Rocket -prereqs -nodebuginfo"
+			" -targetplatform=${config.target} -build -utf8output -Pak -Rocket -prereqs ${extraFlags}"
 
         
 		if(isUnreal5(config)) {
